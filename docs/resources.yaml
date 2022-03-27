@@ -1,0 +1,19 @@
+products_github_todo:
+  - https://github.com/ToolJet/ToolJet
+  - https://github.com/lowdefy
+  - https://github.com/Budibase
+  - https://github.com/temporalio
+  - https://github.com/frappe
+
+local_products_to_do:
+  - https://github.com/jeecgboot/jeecg-boot
+
+products_todo:
+  - https://docs.temporal.io/docs/external-resources/#why-workflow-orchestration
+
+github_topics:
+  - https://github.com/topics/internal-applications
+  - https://github.com/topics/internal-tool
+  - https://github.com/topics/low-code-development-platform
+  - https://github.com/topics/low-code-framework
+  - https://github.com/topics/internal-project
