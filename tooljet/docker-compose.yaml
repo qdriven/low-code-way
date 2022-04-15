@@ -52,7 +52,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ${PWD}/postgres_data
+      device: /opt/data/postgres_data
   certs:
     driver: local
     driver_opts:
