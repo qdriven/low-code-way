@@ -35,8 +35,9 @@ Following Low-code tools to hava a simple try:
 
 - ToolJet
   * [*] docker
-  * [] Create a Application
+  * [*] Create a Application
   * [] docs/tutorial
+  * [] Rating file
 - AppSmith
   * [*] docker
   * [] Create a Application
