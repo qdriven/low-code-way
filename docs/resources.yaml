@@ -4,13 +4,16 @@ products_github_todo:
   - https://github.com/Budibase
   - https://github.com/temporalio
   - https://github.com/frappe
+  - https://github.com/rowyio/rowy
 
 local_products_to_do:
   - https://github.com/jeecgboot/jeecg-boot
 
 products_todo:
   - https://docs.temporal.io/docs/external-resources/#why-workflow-orchestration
-
+  - https://slidebean.com/
+  - https://blog.meta-api.io/
+  - https://www.yourvone.com/
 github_topics:
   - https://github.com/topics/internal-applications
   - https://github.com/topics/internal-tool
