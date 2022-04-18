@@ -3,3 +3,4 @@ tooljet/postgres_data
 tooljet/ToolJet-Source
 cube/conf
 tooljet/tooljet/
+node_modules/
