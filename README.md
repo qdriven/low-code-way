@@ -49,6 +49,10 @@ Following Low-code tools to hava a simple try:
 - [] NocoBase
   * [*] docker
   * [] Demo Application
+- [] Nocodb
+```sh
+npx create-nocodb-app
+```
 - [] YaoApp
   * [] docker
   * [] Application
@@ -70,6 +74,8 @@ Following Low-code tools to hava a simple try:
 - [] Saltcon
 - []  ROWY
 - [] Motor Admin
+- [] Frappe
+
 
 
 
