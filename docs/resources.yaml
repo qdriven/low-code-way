@@ -5,12 +5,16 @@ products_github_todo:
   - https://github.com/temporalio
   - https://github.com/frappe
   - https://baserow.io/
-  
+  - https://github.com/rowyio/rowy
+
 local_products_to_do:
   - https://github.com/jeecgboot/jeecg-boot
 
 products_todo:
   - https://docs.temporal.io/docs/external-resources/#why-workflow-orchestration
+  - https://slidebean.com/
+  - https://blog.meta-api.io/
+  - https://www.yourvone.com/
   - https://www.airplane.dev/
   - https://yaoapps.com/
 
@@ -27,7 +31,6 @@ github_topics:
   - https://github.com/topics/low-code-framework
   - https://github.com/topics/internal-project
   - https://github.com/topics/notion
-  - 
 
 reading:
   - https://medium.com/swlh/top-3-low-and-no-code-databases-for-creative-entrepreneurs-b10f069c36b3
@@ -36,3 +39,8 @@ study:
   - https://automate.io/  
   - https://www.softr.io/
   - https://www.airtable.com/
+  -  low code
+
+ToDoList:
+  - https://ssp.cloud.tencent.com/
+  - feishu
