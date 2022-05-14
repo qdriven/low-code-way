@@ -1,0 +1,28 @@
+- hosts: java-servers
+  vars:
+    workspace: /data
+  sudo: yes
+  tasks:
+    - name: ping server
+      shell: echo "java_application"
+    - name: go to workspace
+      shell: cd {{workspace}} && echo `pwd` && ls -al && mkdir -p support_server 
+    
+    - name: copy app  to folders
+      copy:
+        src: ../files/support-server-1.0-SNAPSHOT.jar
+        dest: "{{workspace}}/support_server"
+
+    - name: copy run script to server
+      copy:
+        src: ../files/run_java_app.sh
+        dest: "{{workspace}}/support_server"
+    - name: run java app scripts
+      shell: sh run_java_app.sh
+      args:
+        chdir: "{{workspace}}/support_server"
+      tags:
+        - start_app
+      # sudo: yes
+    - name: kill java-app
+      shell: ps aux| grep support_server | grep -v "grep" | awk '{print $2}' | xargs kill -9

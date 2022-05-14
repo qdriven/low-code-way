@@ -1,0 +1,4 @@
+.rst-content .section ol p + ul,
+.rst-content .section ul p + ul {
+  margin-top: -12px;
+}

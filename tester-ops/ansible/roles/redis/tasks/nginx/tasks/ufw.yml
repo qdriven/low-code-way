@@ -1,0 +1,5 @@
+- name: Set firewall rules for web access
+  ufw: rule=allow port={{item}} proto=tcp
+  with_items:
+    - 80
+    - 443

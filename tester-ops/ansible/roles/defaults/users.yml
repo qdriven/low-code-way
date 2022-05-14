@@ -1,0 +1,61 @@
+- name: Add user group "{{item.name}}"
+  group: name={{item.name}} gid={{item.gid}} state=present
+  with_items:
+  - { name: 'roots', gid: '2003' }
+  - { name: 'operations', gid: '2004' }
+  - { name: 'mediawiki-ops', gid: '2005' }
+
+- name: Remove old user group "{{item}}"
+  group: name={{item}} state=absent
+  with_items:
+  - sudo
+
+# NOTE: Don't edit without validating first
+- name: Allow users in the roots group to run sudo without a password
+  lineinfile: dest=/etc/sudoers
+              state=present
+              regexp='^\%roots'
+              line='%roots ALL=(ALL) NOPASSWD:ALL'
+              validate='visudo -cf %s'
+
+# NOTE: Don't edit without validating first
+- name: Allow users in the operations group to run sudo without a password
+  lineinfile: dest=/etc/sudoers
+              state=present
+              regexp='^\%operations'
+              line='%operations ALL=(ALL) NOPASSWD:ALL'
+              validate='visudo -cf %s'
+
+- name: Allow the mediawiki-ops group to sudo only some commands with no password
+  lineinfile: dest=/etc/sudoers
+              state=present
+              regexp='^\%mediawiki-ops'
+              line='%mediawiki-ops ALL=(ALL) NOPASSWD:/usr/bin/php, /usr/bin/php5, /root/ans-run, /root/ans-all, /home/mediawiki/db_loop.sh, /etc/init.d/hhvm, /usr/sbin/service nginx'
+              validate='visudo -cf %s'
+
+# NOTE: Don't edit without validating first
+- name: Dont Allow users in the sudo group to run sudo without a password
+  lineinfile: dest=/etc/sudoers
+              state=absent
+              regexp='^\%sudo'
+              line='%sudo ALL=(ALL) NOPASSWD:ALL'
+              validate='visudo -cf %s'
+
+- name: Manage root user "{{item.name}}" in "{{item.groups}}"
+  user: name={{item.name}} group={{item.group}} groups={{item.groups}} uid={{item.uid}} shell={{item.shell}} state={{item.state}}
+  with_items: roots
+
+- name: Manage user "{{item.name}}" in "{{item.groups}}"
+  user: name={{item.name}} group={{item.group}} groups={{item.groups}} uid={{item.uid}} shell={{item.shell}} state={{item.state}}
+  when: "'{{item.hosts}}' in group_names"
+  with_items: users
+
+- name: Upload root user {{item.name}}'s public key
+  authorized_key: user={{item.name}} key="{{ lookup('file', './ssh/keys/' ~ item.name ~ '.pub') }}" state={{item.state}}
+  when: "'{{item.state}}' == 'present'"
+  with_items: roots
+
+- name: Upload {{item.name}}'s public key
+  authorized_key: user={{item.name}} key="{{ lookup('file', './ssh/keys/' ~ item.name ~ '.pub') }}" state={{item.state}}
+  when: "'{{item.hosts}}' in group_names and '{{item.state}}' == 'present'"  
+  with_items: users

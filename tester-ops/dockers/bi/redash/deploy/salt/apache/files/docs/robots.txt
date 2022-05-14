@@ -1,0 +1,16 @@
+User-agent: *
+# Use /latest as the canonical URL for the latest version.
+Disallow: /1.1
+Disallow: /infrastructure/0.9
+Disallow: /profiles/ppp/1.0
+# Disallow old versions.
+Disallow: /1.0
+Disallow: /legacy
+# Disallow protected development branches.
+Disallow: /staging
+# Disallow Data Review Tool results.
+Disallow: /review/data
+Disallow: /infrastructure/review/data
+
+User-Agent: LinkChecker
+Allow: /

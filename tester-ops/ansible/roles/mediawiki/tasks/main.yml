@@ -1,0 +1,6 @@
+---
+- include: users.yml
+- include: packages.yml
+- include: files.yml
+- include: cron.yml
+- include: nfs.yml

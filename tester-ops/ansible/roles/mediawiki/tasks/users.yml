@@ -1,0 +1,12 @@
+- name: Create group "mediawiki"
+  group: name={{item.name}} gid={{item.gid}} state=present
+  with_items:
+  - { name: 'mediawiki', gid: '1001' }
+  - { name: 'mediawiki-ops', gid: '2005' }
+
+- name: Create user "mediawiki"
+  user: name=mediawiki group=mediawiki shell=/bin/zsh uid='1001'
+
+# This would perhaps be better named mediawiki-scripts?
+- name: Create user "www-scripts"
+  user: name=www-scripts group=www-data shell=/bin/zsh uid='2020'

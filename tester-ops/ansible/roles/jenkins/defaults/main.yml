@@ -1,0 +1,9 @@
+---
+# defaults file for jenkins-maven-docker
+
+jenkins_home: /var/lib/jenkins
+jenkins_hostname: localhost
+jenkins_http_port: 8080
+    
+    
+    

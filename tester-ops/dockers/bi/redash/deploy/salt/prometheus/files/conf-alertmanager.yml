@@ -1,0 +1,29 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'email.planio.servers'
+  routes:
+  - receiver: 'email.planio.servers'
+    group_by: ['alertname']
+    group_wait: 30s
+    group_interval: 5m
+    repeat_interval: 1d
+    continue: True
+  - receiver: dogsbody-webhook
+    continue: True
+
+receivers:
+- name: 'email.planio.servers'
+  email_configs:
+    - to: sysadmin@open-contracting.org
+      from: noreply@noreply.open-contracting.org
+      smarthost: email-smtp.us-east-1.amazonaws.com:587
+      auth_username: {{ pillar.smtp.username }}
+      auth_password: {{ pillar.smtp.password }}
+      require_tls: yes
+      send_resolved: True
+- name: 'dogsbody-webhook'
+  webhook_configs:
+    - send_resolved: True
+      url: https://webhook01.dogsbodytechnology.com/v1/prometheus

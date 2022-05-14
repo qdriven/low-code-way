@@ -1,0 +1,56 @@
+# Copyright (c) 2014, 2016, Oracle and/or its affiliates. All rights reserved.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+
+#
+# The MySQL  Server configuration file.
+#
+# For explanations see
+# http://dev.mysql.com/doc/mysql/en/server-system-variables.html
+
+[mysqld]
+datadir=/data/mysql/data
+socket=/data/mysql/mysql.sock
+
+#普通项目的编码方式可以设置成 utf8
+#这里设置成utf8mb4，是因为我的项目需要存储 emoji 表情，
+#这种表情虽然是utf8编码，但是一个字符需要占用4个字节，而MySQL utf8编码只能存放3字节的字符。
+#在MySQL 5.6 以上版本中，可以设置编码为utf8mb4，这个字符集是utf8的超集。
+#注意KEY不要写错，网上很多文章都是写default-character-set是错的
+character-set-server=utf8mb4
+
+#版本5.6.19以后必须设置这一句才能使[client]中设置的编码有效
+character-set-client-handshake = FALSE
+collation-server=utf8mb4_unicode_ci
+init_connect='SET NAMES utf8mb4'
+
+#表名是否区分大小写：1表示不区分大小写，2表示区分
+lower_case_table_names=1
+
+# Disabling symbolic-links is recommended to prevent assorted security risks
+symbolic-links=0
+log-error=/data/mysql/log/mysqld.log
+#skip-grant-tables # 如果去除注释，可以实现免密登录，不建议开启免密
+
+[mysql]
+default-character-set=utf8mb4
+
+[client]
+socket=/data/mysql/mysql.sock
+
+#普通项目的编码方式可以设置成 utf8
+#这里设置成utf8mb4，是因为我的项目需要存储 emoji 表情，
+#这种表情虽然是utf8编码，但是一个字符需要占用4个字节，而MySQL utf8编码只能存放3字节的字符。
+#在MySQL 5.6 以上版本中，可以设置编码为utf8mb4，这个字符集是utf8的超集。
+default-character-set=utf8mb4

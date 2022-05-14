@@ -1,0 +1,23 @@
+[Unit]
+Description=Scrapyd
+After=network.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+Environment="KINGFISHER_API_URI=https://{{ pillar.python_apps.kingfisher_process.apache.servername }}"
+Environment="KINGFISHER_API_LOCAL_DIRECTORY={{ entry.appdir }}/data/"
+Environment="KINGFISHER_API_KEY={{ pillar.kingfisher_process.web.apikeys }}"
+Environment="KINGFISHER_PARAGUAY_HACIENDA_REQUEST_TOKEN={{ pillar.kingfisher_collect.tokens.kingfisher_paraguay_hacienda_request_token }}"
+Environment="KINGFISHER_PARAGUAY_HACIENDA_CLIENT_SECRET={{ pillar.kingfisher_collect.tokens.kingfisher_paraguay_hacienda_client_secret }}"
+Environment="KINGFISHER_PARAGUAY_DNCP_REQUEST_TOKEN="{{ pillar.kingfisher_collect.tokens.kingfisher_paraguay_dncp_request_token }}""
+Environment="KINGFISHER_OPENOPPS_USERNAME="{{ pillar.kingfisher_collect.tokens.kingfisher_openopps_username }}""
+Environment="KINGFISHER_OPENOPPS_PASSWORD="{{ pillar.kingfisher_collect.tokens.kingfisher_openopps_password }}""
+Environment="SENTRY_DSN="{{ pillar.kingfisher_collect.sentry.dsn }}""
+Environment="http_proxy={{ pillar.tinyproxy.url }}"
+Environment="https_proxy={{ pillar.tinyproxy.url }}"
+WorkingDirectory={{ entry.appdir }}
+ExecStart={{ entry.appdir }}/.ve/bin/scrapyd --nodaemon --logfile=/var/log/scrapyd/scrapyd.log
+
+[Install]
+WantedBy=multi-user.target

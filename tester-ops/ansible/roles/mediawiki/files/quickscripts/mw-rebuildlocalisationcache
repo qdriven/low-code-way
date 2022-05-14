@@ -1,0 +1,15 @@
+#!/bin/sh
+# The below is required as this is included as a /etc/init.d script
+# Without the below we get 'missing LSB tags and overrides' warnings
+### BEGIN INIT INFO
+# Provides:          mw-rebuildlocalisationcache
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Rebuilds mw i18n cahce
+# Description:       Rebuilds the Mediawiki localisation cache
+### END INIT INFO
+
+sudo -u mediawiki /usr/bin/php5 /srv/mediawiki/w/maintenance/rebuildLocalisationCache.php --wiki metawiki --lang en --threads 2
+sudo -u mediawiki /usr/bin/php5 /srv/mediawiki/w/maintenance/rebuildLocalisationCache.php --wiki extloadwiki --threads 2

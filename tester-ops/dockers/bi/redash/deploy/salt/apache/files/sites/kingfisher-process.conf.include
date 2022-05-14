@@ -1,0 +1,7 @@
+# vi: ft=apache
+
+DocumentRoot {{ appdir }}
+
+<Location "/">
+    ProxyPass uwsgi://127.0.0.1:{{ entry.uwsgi.port }}/
+</Location>

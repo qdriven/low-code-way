@@ -1,0 +1,1 @@
+docker ps -aq | xargs docker rm

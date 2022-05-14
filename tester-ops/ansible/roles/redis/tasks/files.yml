@@ -1,0 +1,8 @@
+- name: Copy redis config (j2)
+  template: src={{item}} dest=/etc/redis/{{item|basename|replace('.j2','')}}
+  with_fileglob:
+  - ./*.j2
+
+- name: Copy redis config
+  copy: src=evict.conf dest=/etc/redis
+  notify: restart redis

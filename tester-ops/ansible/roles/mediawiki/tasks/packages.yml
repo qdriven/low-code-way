@@ -1,0 +1,69 @@
+- name: Install python-requests
+  apt: pkg=python3-requests force=yes
+
+- name: Install Composer
+  action: shell curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ creates=/usr/local/bin/composer.phar
+
+
+- name: Update Composer
+  action: shell /usr/local/bin/composer.phar self-update
+  register: composer_update_output
+  changed_when: composer_update_output.stdout.find('You are already using composer version') == -1
+
+- name: Install packages for MediaWiki extensions
+  apt: pkg={{item}}
+  with_items:
+  - liblua5.1-0
+  - ploticus
+
+- name: Install php5-redis
+  apt: pkg=php5-redis force=yes state=latest
+  
+- name: Create /srv/mediawiki
+  file: path=/srv/mediawiki state=directory owner=mediawiki
+
+- name: Check out latest stable WMF branch of MediaWiki
+  git: repo=https://github.com/Orain/mediawiki-core.git
+       dest=/srv/mediawiki/w
+       version=REL1_24
+  sudo: yes
+  sudo_user: mediawiki
+  notify:
+    - Rebuild localisation cache
+    - Update mediawiki
+    - Mediawiki submodule fileMode false
+
+- name: Check out extensions for MediaWiki
+  git: repo={{item.repo}}
+       dest=/srv/mediawiki/w/{{item.dest}}
+       version={{item.version}}
+  with_items: extensions
+  sudo: yes
+  sudo_user: mediawiki
+  tags:
+    - slow
+    - mwext
+  notify:
+    - Rebuild localisation cache
+    - Update mediawiki
+    - Mediawiki submodule fileMode false
+    
+- name: Install dependencies for MediaWiki extensions with composer
+  shell: cd /srv/mediawiki/w/extensions/"{{item}}" && /usr/local/bin/composer.phar install
+  with_items:
+    - Validator
+  tags:
+    - mwext
+
+- name: Check out skins for MediaWiki
+  git: repo={{item.repo}}
+       dest=/srv/mediawiki/w/{{item.dest}}
+       version={{item.version}}
+  with_items: skins
+  sudo: yes
+  sudo_user: mediawiki
+  tags:
+    - slow
+    - mwskin
+  notify:
+    - Mediawiki submodule fileMode false

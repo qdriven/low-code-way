@@ -1,0 +1,44 @@
+version: '3.3'
+
+services:
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    volumes:
+       - /data/jenkins_data:/var/jenkins_home
+    networks:
+      - sonarnet
+    ports:
+      - '8080:8080'
+      - '50000:50000'
+
+  sonarqube:
+    image: sonarqube:latest
+    volumes:
+      - /data/sonar/sonarqube_conf:/opt/sonarqube/conf
+      - /data/sonar/sonarqube_data:/opt/sonarqube/data
+      - /data/sonar/sonarqube_extensions:/opt/sonarqube/extensions
+      - /data/sonar/sonarqube_bundled-plugins:/opt/sonarqube/lib/bundled-plugins
+    networks:
+      - sonarnet
+    ports:
+      - '9000:9000'
+    environment:
+      - sonar.jdbc.username=sonar
+      - sonar.jdbc.password=sonar
+      - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
+
+  db:
+    image: postgres
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - /data/sonar/postgresql:/var/lib/postgresql
+      - /data/sonar/postgresql_data:/var/lib/postgresql/data
+
+networks:
+  sonarnet:
+    driver: bridge

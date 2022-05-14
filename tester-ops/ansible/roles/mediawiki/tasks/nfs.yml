@@ -1,0 +1,25 @@
+---
+- name: Install nfs-common
+  apt: name=nfs-common
+
+#- name: Ensure directories exist
+#  file: path={{item}} state=directory owner=mediawiki
+#  with_items:
+#  - /mnt/mediawiki/filecache
+#  - /mnt/mediawiki/uploads
+#  - /mnt/mediawiki/private/uploads
+
+- name: Mount public uploads
+  mount: name=/mnt/mediawiki/filecache fstype=nfs src=10.131.158.211:/var/mediawiki/filecache state=mounted
+  sudo: yes
+  failed_when: False
+  
+- name: Mount public uploads
+  mount: name=/mnt/mediawiki/uploads fstype=nfs src=10.131.158.211:/var/mediawiki/uploads state=mounted
+  sudo: yes
+  failed_when: False
+  
+- name: Mount private uploads
+  mount: name=/mnt/mediawiki/private/uploads fstype=nfs src=10.131.158.211:/var/mediawiki/private/uploads state=mounted
+  sudo: yes
+  failed_when: False

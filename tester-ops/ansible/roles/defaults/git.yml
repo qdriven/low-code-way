@@ -1,0 +1,9 @@
+- name: chmod 600 private key file
+  command: "/bin/chmod 600 /root/private/git_private"
+  ignore_errors: yes
+  
+- name: Clone private git repo
+  git: repo=ssh://git@10.131.158.211/etc/git/private
+       dest=/root/private
+       accept_hostkey=yes
+       key_file=/root/private/git_private

@@ -1,0 +1,20 @@
+- name: Rebuild localisation cache
+  command: /usr/bin/php5 /srv/mediawiki/w/maintenance/rebuildLocalisationCache.php --wiki {{item}}
+  sudo: yes
+  sudo_user: mediawiki
+  with_items:
+#    - metawiki # Only uncomment this if things break
+    - extloadwiki
+
+- name: Install Validator dependencies using Composer
+  shell: "cd /srv/mediawiki/w/extensions/Validator && /usr/local/bin/composer.phar install"
+  sudo: yes
+  sudo_user: mediawiki
+
+- name: Mediawiki submodule fileMode false
+  shell: "cd /srv/mediawiki/w/ && git submodule foreach --recursive git config core.fileMode false"
+  sudo: yes
+  sudo_user: mediawiki
+
+- name: Update mediawiki
+  shell: "/root/mw-updateall"

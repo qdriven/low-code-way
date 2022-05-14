@@ -1,0 +1,49 @@
+version: '3.3'
+
+services:
+  sonar_mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=sonar
+      - MYSQL_ROOT_PASSWORD=sonar
+      - MYSQL_USER=sonar
+      - MYSQL_PASSWORD=sonar
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./mysql:/etc/mysql/conf.d 
+    
+  # postgres:
+  #   image: postgres
+  #   ports:
+  #     - "5432:5432"
+  #   environment:
+  #     - POSTGRES_USER=sonar
+  #     - POSTGRES_PASSWORD=sonar
+  #   volumes:
+  #     - /var/lib/postgresql
+  #     - /var/lib/postgresql/data
+
+  sonar_server:
+    image: sonarqube
+    ports: 
+      - "9000:9000"
+      # - "9092:9092"
+    restart: always
+    volumes:
+      - ./sonar/extension:/opt/sonarqube/extensions
+      - ./sonar/data/docker:/opt/sonarqube/docker
+      # - ./sonar/sysctl.conf:/etc/sysctl.conf:ro
+    # command: sysctl -w vm.max_map_count=262144
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://sonar_mysql:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance
+      - SONARQUBE_JDBC_USERNAME=sonar
+      - SONARQUBE_JDBC_PASSWORD=sonar
+    links:
+      - sonar_mysql
+    # entrypoint: |
+    #   bash -c 'bash -s <<EOF
+    #   trap "break;exit" SIGHUP SIGINT SIGTERM
+    #   sysctl -w vm.max_map_count=262144 && ./bin/run.sh
+    #   EOF'
