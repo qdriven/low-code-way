@@ -1,1 +1,0 @@
-package xyz.fluentqa.vaadin;
