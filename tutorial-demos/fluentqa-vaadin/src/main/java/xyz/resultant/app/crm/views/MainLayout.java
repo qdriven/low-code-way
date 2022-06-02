@@ -23,16 +23,13 @@ public class MainLayout extends AppLayout {
     private void createHeader() {
         H1 logo = new H1("Vaadin CRM");
         logo.addClassNames("text-l", "m-m");
-
 //        Button logout = new Button("Log out", e -> securityService.logout());
 
         HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo);
-
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.expand(logo);
         header.setWidth("100%");
         header.addClassNames("py-0", "px-m");
-
         addToNavbar(header);
 
     }
@@ -42,8 +39,8 @@ public class MainLayout extends AppLayout {
         listLink.setHighlightCondition(HighlightConditions.sameLocation());
 
         addToDrawer(new VerticalLayout(
-            listLink,
-            new RouterLink("Dashboard", DashboardView.class)
+                listLink,
+                new RouterLink("Dashboard", DashboardView.class)
         ));
     }
 }

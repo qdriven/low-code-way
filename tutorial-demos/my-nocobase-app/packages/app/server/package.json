@@ -1,0 +1,17 @@
+{
+  "name": "@my-nocobase-app/app-server",
+  "version": "0.1.0",
+  "description": "",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "dependencies": {
+    "@nocobase/preset-nocobase": "0.7.0-alpha.82"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nocobase/nocobase.git",
+    "directory": "packages/app/server"
+  },
+  "gitHead": "4820fd09375c7200d1ea0bb0aab1bd4783b80d3d"
+}
