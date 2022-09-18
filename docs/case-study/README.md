@@ -1,3 +1,0 @@
-# Case Studies
-
-## Browser API
