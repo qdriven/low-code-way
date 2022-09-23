@@ -12,5 +12,9 @@ curl -sSL https://get.rvm.io | bash -s stable
 rvm install 3.1.1
 ruby use 3.1.1 --default
 ```
-- install ruby on rails
+- install ruby on rails and create demo project
+```shell
+rails new  qa-adminss
+```
 - install avo
+
