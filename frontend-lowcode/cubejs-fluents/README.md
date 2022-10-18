@@ -9,3 +9,12 @@ docker run -p 4000:4000 \
 
 ## Setup Postgresql
 
+
+
+## Setup For QA Mesurement
+
+- Open Issue
+- Metrics
+
+## Open Metrics
+
