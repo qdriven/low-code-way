@@ -30,8 +30,18 @@ There are some tool categories:
 
 ## Infra
 
+- [database](infra/database-tools)
+- [gitlab](infra/gitlab)
+- [project management and wiki](qa-lowcode/pm/)
 
+## QA Tools
 
+- [Mock Server](qa-lowcode/mockp-server)
+
+## Test Ops
+
+- [ansible-scipts](tester-ops/ansible)
+- [docker-compose files](tester-ops/dockers)
 ## Reference
 
 Some of this project is from:
