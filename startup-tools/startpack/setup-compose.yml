@@ -1,0 +1,161 @@
+version: '3.8'
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+
+services:
+  # https://doc.traefik.io/traefik/getting-started/quick-start/
+  # https://dockerswarm.rocks/traefik/
+  traefik:
+    container_name: traefik
+    image: traefik:v2.6
+    ports:
+      - 80:80
+      - 443:443
+    deploy:
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    labels:
+        - traefik.enable=true
+        - traefik.docker.network=monitoring
+        - traefik.http.middlewares.admin-auth.basicauth.users=${USERNAME?Variable USERNAME not set}:${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+        - traefik.http.routers.traefik-api-http.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)
+        - traefik.http.routers.traefik-api-http.entrypoints=http
+        - traefik.http.routers.traefik-api-http.service=api@internal
+        #- traefik.http.routers.traefik-api-http.middlewares=https-redirect
+        - traefik.http.routers.traefik-api-http.middlewares=admin-auth
+        - traefik.http.routers.traefik-api-https.rule=Host(`traefik.${DOMAIN?Variable DOMAIN not set}`)
+        - traefik.http.routers.traefik-api-https.entrypoints=https
+        - traefik.http.routers.traefik-api-https.tls=true
+        - traefik.http.routers.traefik-api-https.service=api@internal
+        - traefik.http.routers.traefik-api-https.tls.certresolver=le
+        - traefik.http.routers.traefik-api-https.middlewares=admin-auth
+        - traefik.http.services.traefik.loadbalancer.server.port=8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-certs:/certificates
+    command:
+      - --providers.docker
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.defaultRule=Host(`{{ .Name }}.${DOMAIN?Variable DOMAIN not set}`)
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --certificatesresolvers.le.acme.email=${EMAIL?Variable EMAIL not set}
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.tlschallenge=true
+      - --accesslog
+      - --log
+      - --api
+      - --api.dashboard=true
+      - --ping=true
+      - --ping.entryPoint=ping
+      - --entryPoints.ping.address=:8081
+      - --metrics.prometheus=true
+      - --entryPoints.metrics.address=:8082
+      - --metrics.prometheus.entryPoint=metrics
+      - --serverstransport.insecureskipverify=true
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "-c", "http://localhost:8081/ping"]
+      interval: 1s
+      timeout: 1s
+      retries: 10
+      start_period: 2s
+    networks:
+      - database
+      - monitoring
+      - bitwarden
+      - gitlab
+      - registry
+      - minio
+      - nocodb
+      - openproject
+      - portainer
+      - strapi
+      - appwrite
+      - taiga
+      - rocketchat
+      - vaultwarden
+      - twake
+      - tuleap
+      - nextcloud
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  traefik-certs:
+    name: traefik-certs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/traefik/certificates
+
+x-network: &network
+  driver: bridge
+  attachable: true
+
+networks:
+  monitoring:
+    name: monitoring
+    <<: *network
+  bitwarden:
+    name: bitwarden
+    <<: *network
+  gitlab:
+    name: gitlab
+    <<: *network
+  registry:
+    name: registry
+    <<: *network
+  minio:
+    name: minio
+    <<: *network
+  database:
+    name: database
+    <<: *network
+  nocodb:
+    name: nocodb
+    <<: *network
+  openproject:
+    name: openproject
+    <<: *network
+  portainer:
+    name: portainer
+    <<: *network
+  strapi:
+    name: strapi
+    <<: *network
+  appwrite:
+    name: appwrite
+    <<: *network
+  taiga:
+    name: taiga
+    <<: *network
+  rocketchat:
+    name: rocketchat
+    <<: *network
+  vaultwarden:
+    name: vaultwarden
+    <<: *network
+  twake:
+    name: twake
+    <<: *network
+  tuleap:
+    name: tuleap
+    <<: *network
+  nextcloud:
+    name: nextcloud
+    <<: *network

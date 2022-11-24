@@ -1,0 +1,380 @@
+version: '3.8'
+
+x-victoriametrics-labels: &victoriametrics-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.victoriametrics-http.rule=Host(`victoriametrics.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.victoriametrics-http.entrypoints=http
+    #- traefik.http.routers.victoriametrics-http.middlewares=admin-auth
+    - traefik.http.routers.victoriametrics-http.service=victoriametrics
+    - traefik.http.routers.victoriametrics-http.middlewares=https-redirect
+    - traefik.http.routers.victoriametrics-https.rule=Host(`victoriametrics.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.victoriametrics-https.entrypoints=https
+    - traefik.http.routers.victoriametrics-https.middlewares=admin-auth
+    - traefik.http.routers.victoriametrics-https.tls=true
+    - traefik.http.routers.victoriametrics-https.service=victoriametrics
+    - traefik.http.routers.victoriametrics-https.tls.certresolver=le
+    - traefik.http.services.victoriametrics.loadbalancer.server.port=8428
+
+x-influxdb-labels: &influxdb-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.influxdb-http.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-http.entrypoints=http
+    #- traefik.http.routers.influxdb-http.middlewares=admin-auth
+    - traefik.http.routers.influxdb-http.service=influxdb
+    - traefik.http.routers.influxdb-http.middlewares=https-redirect
+    - traefik.http.routers.influxdb-https.rule=Host(`influxdb.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.influxdb-https.entrypoints=https
+    #- traefik.http.routers.influxdb-https.middlewares=admin-auth
+    - traefik.http.routers.influxdb-https.tls=true
+    - traefik.http.routers.influxdb-https.service=influxdb
+    - traefik.http.routers.influxdb-https.tls.certresolver=le
+    - traefik.http.services.influxdb.loadbalancer.server.port=8086
+
+x-grafana-labels: &grafana-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=monitoring
+    - traefik.http.routers.grafana-http.rule=Host(`grafana.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-http.entrypoints=http
+    #- traefik.http.routers.grafana-http.middlewares=admin-auth
+    - traefik.http.routers.grafana-http.service=grafana
+    - traefik.http.routers.grafana-http.middlewares=https-redirect
+    - traefik.http.routers.grafana-https.rule=Host(`grafana.${DOMAIN?Variable not set}`)
+    - traefik.http.routers.grafana-https.entrypoints=https
+    #- traefik.http.routers.grafana-https.middlewares=admin-auth
+    - traefik.http.routers.grafana-https.tls=true
+    - traefik.http.routers.grafana-https.service=grafana
+    - traefik.http.routers.grafana-https.tls.certresolver=le
+    - traefik.http.services.grafana.loadbalancer.server.port=3000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - monitoring
+
+services:
+  # https://docs.victoriametrics.com
+  # https://github.com/VictoriaMetrics/VictoriaMetrics/blob/master/deployment/docker/docker-compose.yml
+  victoriametrics:
+    container_name: victoriametrics
+    image: victoriametrics/victoria-metrics
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 100M
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
+      <<: *victoriametrics-labels
+    <<: *victoriametrics-labels
+    <<: *service
+    volumes:
+      - victoriametrics-configs:/etc/victoriametrics
+      - victoriametrics-data:/storage
+    command:
+      - --storageDataPath=/storage/vmetrics
+      - --graphiteListenAddr=:2003
+      - --opentsdbListenAddr=:4242
+      - --httpListenAddr=:8428
+      - --influxListenAddr=:8089
+      - --retentionPeriod=2w
+    user: root
+
+  vmagent:
+    container_name: vmagent
+    image: victoriametrics/vmagent
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    volumes:
+      - victoriametrics-configs:/etc/victoriametrics
+      - victoriametrics-data:/storage
+    command:
+      - '--promscrape.config=/etc/victoriametrics/prometheus.yml'
+      - '--remoteWrite.url=http://victoriametrics:8428/api/v1/write'
+
+  vmalert:
+    container_name: vmalert
+    image: victoriametrics/vmalert
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    volumes:
+      - victoriametrics-configs:/etc/victoriametrics
+    command:
+      - '--datasource.url=http://victoriametrics:8428/'
+      - '--remoteRead.url=http://victoriametrics:8428/'
+      - '--remoteWrite.url=http://victoriametrics:8428/'
+      - '--notifier.url=http://alertmanager:9093/'
+      - '--rule=/etc/victoriametrics/alerts/*.yml'
+      # display source of alerts in grafana
+      - "--external.url=http://grafana:3000"
+      - '--external.alert.source=explore?orgId=1&left=["now-1h","now","VictoriaMetrics",{"expr":"{{$$expr|quotesEscape|crlfEscape|queryEscape}}"},{"mode":"Metrics"},{"ui":[true,true,true,"none"]}]' ## when copypaste the line be aware of '$$' for escaping in '$expr'
+
+
+  # https://hub.docker.com/r/grafana/grafana
+  # https://grafana.com/docs/grafana/latest/administration/configure-docker/
+  # https://grafana.com/docs/grafana/latest/administration/configuration/#configure-with-environment-variables
+  # https://grafana.com/docs/grafana/latest/administration/provisioning/
+  # https://github.com/grafana/grafana/blob/main/devenv
+  grafana:
+    container_name: grafana
+    image: grafana/grafana
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+      <<: *grafana-labels
+    <<: *grafana-labels
+    <<: *service
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - grafana-provisioning:/etc/grafana/provisioning
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clock-panel
+      GF_SECURITY_ADMIN_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      GF_SECURITY_ADMIN_USER: ${USERNAME?Variable USERNAME not set}
+      GF_SECURITY_SECRET_KEY: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      GF_SERVER_ROOT_URL: https://grafana.${DOMAIN?Variable not set}
+      GF_SERVER_ENABLE_GZIP: "true"
+      GF_SECURITY_COOKIE_SECURE: "true"
+      GF_SNAPSHOTS_EXTERNAL_ENABLED: "false"
+      INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
+      INFLUXDB_BUCKET: telegraf
+    user: root
+
+  # https://hub.docker.com/_/influxdb
+  # https://docs.influxdata.com/influxdb/v2.1/install/?t=Docker
+  # https://docs.influxdata.com/influxdb/v2.1/reference/config-options/
+  # https://github.com/influxdata/community-templates/blob/master/docs/use_a_template.md
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.1
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 130M
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
+      <<: *influxdb-labels
+    <<: *influxdb-labels
+    <<: *service
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-entrypoint:/docker-entrypoint-initdb.d
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${USERNAME?Variable USERNAME not set}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${PASSWORD?Variable PASSWORD not set}
+      DOCKER_INFLUXDB_INIT_ORG: ${DOMAIN?Variable DOMAIN not set}
+      DOCKER_INFLUXDB_INIT_BUCKET: telegraf
+      DOCKER_INFLUXDB_INIT_RETENTION: 2w
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+    user: root
+
+  # https://hub.docker.com/_/telegraf
+  # https://github.com/influxdata/telegraf/blob/master/docs/FAQ.md
+  # https://docs.influxdata.com/telegraf/v1.21/administration/commands/
+  telegraf-node:
+    container_name: telegraf-node
+    image: telegraf
+    deploy:
+      mode: global
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    volumes:
+      - telegraf-configs:/etc/telegraf
+      - /:/hostfs:ro
+    command:
+      - --config=/etc/telegraf/telegraf-node.conf
+    environment:
+      HOST_ETC: /hostfs/etc
+      HOST_PROC: /hostfs/proc
+      HOST_SYS: /hostfs/sys
+      HOST_VAR: /hostfs/var
+      HOST_RUN: /hostfs/run
+      HOST_MOUNT_PREFIX: /hostfs
+      INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
+      INFLUXDB_BUCKET: telegraf
+    user: root
+    entrypoint: "telegraf"
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 50M
+    <<: *service
+    volumes:
+      - telegraf-configs:/etc/telegraf
+    environment:
+      SQL_ROOT_PASSWORD: ${SQL_ROOT_PASSWORD?Variable SQL_ROOT_PASSWORD not set}
+      TULEAP_SQL_PASSWORD: ${TULEAP_SQL_PASSWORD?Variable TULEAP_SQL_PASSWORD not set}
+      INFLUXDB_TOKEN: ${HASHED_PASSWORD?Variable HASHED_PASSWORD not set}
+      INFLUXDB_ORG: ${DOMAIN?Variable DOMAIN not set}
+      INFLUXDB_BUCKET: telegraf
+    networks:
+      - database
+      - monitoring
+      - bitwarden
+      - gitlab
+      - registry
+      - minio
+      - nocodb
+      - openproject
+      - portainer
+      - strapi
+      - appwrite
+      - taiga
+      - rocketchat
+      - vaultwarden
+      - tuleap
+      - nextcloud
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  victoriametrics-data:
+    name: victoriametrics-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/victoriametrics/data
+  victoriametrics-configs:
+    name: victoriametrics-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/victoriametrics/configs
+  influxdb-data:
+    name: influxdb-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/data
+  influxdb-entrypoint:
+    name: influxdb-entrypoint
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/influxdb/entrypoint
+  telegraf-configs:
+    name: telegraf-configs
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/telegraf/configs
+  grafana-data:
+    name: grafana-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/data
+  grafana-provisioning:
+    name: grafana-provisioning
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/grafana/provisioning
+
+x-network: &network
+  external: true
+
+networks:
+  monitoring:
+    name: monitoring
+    <<: *network
+  bitwarden:
+    name: bitwarden
+    <<: *network
+  gitlab:
+    name: gitlab
+    <<: *network
+  registry:
+    name: registry
+    <<: *network
+  minio:
+    name: minio
+    <<: *network
+  database:
+    name: database
+    <<: *network
+  nocodb:
+    name: nocodb
+    <<: *network
+  openproject:
+    name: openproject
+    <<: *network
+  portainer:
+    name: portainer
+    <<: *network
+  strapi:
+    name: strapi
+    <<: *network
+  appwrite:
+    name: appwrite
+    <<: *network
+  taiga:
+    name: taiga
+    <<: *network
+  rocketchat:
+    name: rocketchat
+    <<: *network
+  rocketchat:
+    name: rocketchat
+    <<: *network
+  vaultwarden:
+    name: vaultwarden
+    <<: *network
+  twake:
+    name: twake
+    <<: *network
+  tuleap:
+    name: tuleap
+    <<: *network
+  nextcloud:
+    name: nextcloud
+    <<: *network

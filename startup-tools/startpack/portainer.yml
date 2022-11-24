@@ -1,0 +1,96 @@
+version: '3.8'
+
+x-portainer-labels: &portainer-labels
+  labels:
+    - traefik.enable=true
+    - traefik.docker.network=portainer
+    - traefik.http.routers.portainer-http.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.portainer-http.entrypoints=http
+    - traefik.http.routers.portainer-http.service=portainer
+    - traefik.http.routers.portainer-http.middlewares=https-redirect
+    - traefik.http.routers.portainer-https.rule=Host(`portainer.${DOMAIN?Variable DOMAIN not set}`)
+    - traefik.http.routers.portainer-https.entrypoints=https
+    - traefik.http.routers.portainer-https.tls=true
+    - traefik.http.routers.portainer-https.service=portainer
+    - traefik.http.routers.portainer-https.tls.certresolver=le
+    - traefik.http.services.portainer.loadbalancer.server.port=9000
+
+x-service: &service
+  logging:
+    driver: json-file
+    options:
+      max-size: "100m"
+      max-file: "2"
+  restart: always
+  networks:
+    - portainer
+
+services:
+  # https://hub.docker.com/portainer/portainer-ce
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:alpine
+    deploy:
+      mode: replicated
+      replicas: 1
+      resources:
+        reservations:
+          cpus: '0.03'
+          memory: 50M
+      placement:
+        constraints:
+          - node.hostname == ${HOSTNAME?Variable HOSTNAME not set}
+      <<: *portainer-labels
+    <<: *portainer-labels
+    <<: *service
+    command:
+      #- --admin-password=${PORTAINER_HASHED_PASSWORD?Variable PORTAINER_HASHED_PASSWORD not set} # doesn't work in any tried variant, with escaping $$, diff hashes...
+      - --host=tcp://portainer-agent:9001
+      - --tlsskipverify
+      - --no-analytics
+      - --http-enabled
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider http://localhost:9000"]
+      interval: 1s
+      timeout: 1s
+      retries: 120
+      start_period: 2s
+
+  portainer-agent:
+    container_name: portainer-agent
+    image: portainer/agent
+    deploy:
+      mode: global
+      resources:
+        reservations:
+          cpus: '0.01'
+          memory: 10M
+      placement:
+        constraints:
+          - node.platform.os == linux
+    <<: *service
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+
+x-volume: &volume
+  driver: local
+x-volume-driver-opts: &volume-driver-opts
+  type: none
+  o: bind
+
+volumes:
+  portainer-data:
+    name: portainer-data
+    <<: *volume
+    driver_opts:
+      <<: *volume-driver-opts
+      device: ${DATAPATH?Variable DATAPATH not set}/portainer/data
+
+networks:
+  portainer:
+    name: portainer
+    external: true
