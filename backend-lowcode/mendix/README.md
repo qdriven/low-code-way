@@ -1,4 +1,3 @@
 # README
 
-- [] Intro
-- [] Demo
+Not Opensource
