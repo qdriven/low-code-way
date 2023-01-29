@@ -9,3 +9,5 @@ postgres_data/
 frontend-lowcode/cubejs-fluents/conf
 xpocketbase
 pb_data/
+tutorial-demos/
+workflow-automation/

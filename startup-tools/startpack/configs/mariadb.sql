@@ -1,3 +1,0 @@
--- create database tuleap;
--- CREATE USER 'tuleapadm'@'%' IDENTIFIED BY '${TULEAP_SQL_PASSWORD}';
--- GRANT ALL PRIVILEGES ON tuleap.* TO 'tuleapadm'@'%';

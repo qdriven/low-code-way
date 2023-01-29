@@ -6,6 +6,15 @@ Many of these tools provider too much functionalities which is too expesensive t
 After the improvement of dev language, framework and so on, the cost of devlop back-office service is decreased significant. The proof of the cost reduced is that the opensource tools, and low-code tools. I tried some of these tools, and find out , actually I can use different tools to replace different commercial tools. Why it works? In most cases, I only use the 20% of the functionalities.
 Different little tools can provide these 20% functionalities with less cost. And most complex functionalities which can be replaced by in-house tools which is eventually developed, as it is highly organization related. 
 
+## Solve Problem with less cost
+
+In startup company, how to solve problem with less cost?
+
+1. what's kind of problem you want to solve?
+2. Is there any existing opensouce tool to solve it?
+3. How to use the opensource tool?
+4. How to integrate different tools?
+
 ## Less struggling for QA in small starup company 
 
 This is for QA who struggling in a small startup company to build some tools to help productivities.
@@ -38,7 +47,7 @@ There are some tool categories:
 ## Interal Tools Builder
 
 - [illa-builder](fullstack-lowcode/illa-builder)
-
+- [form-ai](https://github.com/AOT-Technologies/forms-flow-ai.git)
 ## Draw tools
 
 - [excalidraw](https://github.com/excalidraw/excalidraw)
@@ -54,6 +63,7 @@ There are some tool categories:
   - 
 ## Reference
 
-Some of this project is from:
+Some of this project are from:
 - [tester-ops-collections](http://github.com/qdriven/tester-ops-collections)
 - [startpack](https://github.com/tldr-devops/startpack.git)
+
