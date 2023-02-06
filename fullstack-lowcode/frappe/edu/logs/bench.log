@@ -1,7 +1,0 @@
-2022-11-21 17:41:33,357 DEBUG cd /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu && /Library/Frameworks/Python.framework/Versions/3.10/bin/virtualenv --quiet env -p python3
-2022-11-21 17:41:34,488 DEBUG cd /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu && /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu/env/bin/python -m pip install --quiet --upgrade pip
-2022-11-21 17:41:40,253 LOG Getting frappe
-2022-11-21 17:41:40,253 DEBUG cd edu/apps && git clone https://github.com/frappe/frappe.git  --depth 1 --origin upstream
-2022-11-21 17:42:21,063 LOG Installing frappe
-2022-11-21 17:42:21,064 DEBUG cd /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu && /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu/env/bin/python -m pip install --quiet --upgrade -e /Users/patrick/workspace/personal/qdriven/daily-qa/low-code-way/fullstack-lowcode/frappe/edu/apps/frappe 
-2022-11-21 17:44:04,151 WARNING /Library/Frameworks/Python.framework/Versions/3.10/bin/bench init edu executed with exit code 1

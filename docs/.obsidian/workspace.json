@@ -11,16 +11,8 @@
             "id": "dc666971f594b8d6",
             "type": "leaf",
             "state": {
-              "type": "canvas",
-              "state": {
-                "file": "lessons/1-code-generator/code-gen.canvas",
-                "viewState": {
-                  "x": 0,
-                  "y": 0,
-                  "zoom": 0,
-                  "snapToGrid": false
-                }
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -53,7 +45,7 @@
               "type": "search",
               "state": {
                 "query": "",
-                "matchingCase": false,
+                "matchingCase": true,
                 "explainSearch": false,
                 "collapseAll": false,
                 "extraContext": false,
@@ -69,11 +61,12 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200
   },
   "right": {
     "id": "0dea9cb2ef569a75",
@@ -89,7 +82,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "lessons/1-code-generator/code-gen.canvas",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -106,7 +98,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "lessons/1-code-generator/code-gen.canvas",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -128,9 +119,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "lessons/1-code-generator/code-gen.canvas"
-              }
+              "state": {}
             }
           }
         ]
@@ -150,8 +139,10 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "dc666971f594b8d6",
+  "active": "3f1425da67699ea2",
   "lastOpenFiles": [
+    "未命名.canvas",
+    "README.md",
     "lessons/1-code-generator/code-gen.canvas",
     "lessons/1-code-generator/代码生成Overview.md",
     "未命名.md",
@@ -159,8 +150,6 @@
     "low-code-protocol/src/pages/blog/introducing-heroicons/icon-styles.svg",
     "low-code-protocol/src/pages/blog/introducing-heroicons/heropatterns-preview.jpg",
     "low-code-protocol/src/pages/blog/introducing-heroicons/card.jpg",
-    "low-code-protocol/src/pages/blog/introducing-heroicons/banner.svg",
-    "low-code-protocol/README.md",
-    "low-code-protocol/src/img/tailwind-ui-logo-on-dark.svg"
+    "low-code-protocol/src/pages/blog/introducing-heroicons/banner.svg"
   ]
 }

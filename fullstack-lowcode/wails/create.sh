@@ -1,1 +1,0 @@
-wails init -help
