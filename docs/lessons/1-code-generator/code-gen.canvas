@@ -1,6 +1,0 @@
-{
-	"nodes":[
-		{"id":"38b7c5bf7dd9333c","x":-366,"y":-372,"width":314,"height":97,"type":"text","text":"代码生成：\n1. 一个表的CRUD - 5个接口"}
-	],
-	"edges":[]
-}
