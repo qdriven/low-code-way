@@ -13,8 +13,7 @@ In startup company, how to solve problem with less cost?
 1. what's kind of problem you want to solve?
 2. Is there any existing opensouce tool to solve it?
 3. How to use the opensource tool?
-4. How to integrate different tools?
-
+4. How to integrate different tools
 ## Less struggling for QA in small starup company 
 
 This is for QA who struggling in a small startup company to build some tools to help productivities.
