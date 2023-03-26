@@ -1,0 +1,376 @@
+[
+    {
+        "slotName": "中型货车运输",
+        "slotSymbol": "V1",
+        "slotType": "ELEMENT",
+        "slotValueRange": "f37585a8-d626-417c-8ea4-b92e96574766",
+        "slotValue": ""
+    },
+    {
+        "slotName": "中型货车运输质量*距离",
+        "slotSymbol": "V2",
+        "slotType": "DATA_SOURCE",
+        "slotValueRange": "cb7bc054-bee7-48ea-9530-4a06163d67dc",
+        "slotValue": "dXr3r7BB2Vcq8m9Z"
+    }
+]
+
+
+{
+    "unitId": "555935be-b4f6-4964-8a6f-0873876411da",
+    "value": "0.000000042000000000",
+    "uncertainty": "2.236067977499789696409173668731276",
+    "score": null
+}
+
+
+[
+    {
+        "slotSymbol": null,
+        "parameterType": "DISTRIBUTION",
+        "valueVo": {
+            "unit": null,
+            "value": "1.00",
+            "uncertainty": "0",
+            "score": null
+        },
+        "valueBeforeAllocate": null,
+        "distribution": true
+    },
+    {
+        "slotSymbol": "V2",
+        "parameterType": "FORMULA_ACTIVITY",
+        "valueVo": {
+            "unit": {
+                "id": "797383f4-2502-4801-8034-385fa8bdca33",
+                "name": "吨*千米",
+                "factor": "0.001",
+                "groupId": "cb7bc054-bee7-48ea-9530-4a06163d67dc",
+                "basicUnit": "c29dae5f-0fed-4b0b-835e-f4463724cb37",
+                "elementIds": [
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "t*km",
+                "display": "t*km",
+                "groupName": "质量*距离",
+                "elements": [
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "1.0000000",
+            "uncertainty": "2.00",
+            "score": "4"
+        },
+        "valueBeforeAllocate": {
+            "unit": {
+                "id": "797383f4-2502-4801-8034-385fa8bdca33",
+                "name": "吨*千米",
+                "factor": "0.001",
+                "groupId": "cb7bc054-bee7-48ea-9530-4a06163d67dc",
+                "basicUnit": "c29dae5f-0fed-4b0b-835e-f4463724cb37",
+                "elementIds": [
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "t*km",
+                "display": "t*km",
+                "groupName": "质量*距离",
+                "elements": [
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "1.0000000",
+            "uncertainty": "2.00",
+            "score": "4"
+        },
+        "distribution": false
+    },
+    {
+        "slotSymbol": "V1",
+        "parameterType": "FORMULA_FACTOR",
+        "valueVo": {
+            "unit": {
+                "id": "1da20b9f-c3df-4041-8154-4e76a4fa2e2c",
+                "name": "千克二氧化碳当量/吨/千米",
+                "factor": "0.001",
+                "groupId": "5aaa6eca-e261-412d-bbf4-29291617340b",
+                "basicUnit": "5aaa6eca-qwer-fdsa-fgvb-12341617340b",
+                "elementIds": [
+                    "555935be-b4f6-4964-8a6f-0873876411da",
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "kgCO2e/t/km",
+                "display": "kgCO_{2}e/t/km",
+                "groupName": "二氧化碳当量/质量/距离",
+                "elements": [
+                    {
+                        "id": "555935be-b4f6-4964-8a6f-0873876411da",
+                        "name": "千克二氧化碳当量",
+                        "factor": "1",
+                        "groupId": "7ebffc09-148a-43f5-9612-cd4315a5d16f",
+                        "basicUnit": "555935be-b4f6-4964-8a6f-0873876411da",
+                        "elementIds": [
+                            "555935be-b4f6-4964-8a6f-0873876411da"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "0.042",
+            "uncertainty": "1.00",
+            "score": "4"
+        },
+        "valueBeforeAllocate": null,
+        "distribution": false
+    }
+]
+
+
+
+
+[
+    {
+        "slotSymbol": null,
+        "parameterType": "DISTRIBUTION",
+        "valueVo": {
+            "unit": null,
+            "value": "1.00",
+            "uncertainty": "0",
+            "score": null
+        },
+        "valueBeforeAllocate": null,
+        "distribution": true
+    },
+    {
+        "slotSymbol": "V2",
+        "parameterType": "FORMULA_ACTIVITY",
+        "valueVo": {
+            "unit": {
+                "id": "797383f4-2502-4801-8034-385fa8bdca33",
+                "name": "吨*千米",
+                "factor": "0.001",
+                "groupId": "cb7bc054-bee7-48ea-9530-4a06163d67dc",
+                "basicUnit": "c29dae5f-0fed-4b0b-835e-f4463724cb37",
+                "elementIds": [
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "t*km",
+                "display": "t*km",
+                "groupName": "质量*距离",
+                "elements": [
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "1.0000000",
+            "uncertainty": "2.00",
+            "score": "4"
+        },
+        "valueBeforeAllocate": {
+            "unit": {
+                "id": "797383f4-2502-4801-8034-385fa8bdca33",
+                "name": "吨*千米",
+                "factor": "0.001",
+                "groupId": "cb7bc054-bee7-48ea-9530-4a06163d67dc",
+                "basicUnit": "c29dae5f-0fed-4b0b-835e-f4463724cb37",
+                "elementIds": [
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "t*km",
+                "display": "t*km",
+                "groupName": "质量*距离",
+                "elements": [
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "1.0000000",
+            "uncertainty": "2.00",
+            "score": "4"
+        },
+        "distribution": false
+    },
+    {
+        "slotSymbol": "V1",
+        "parameterType": "FORMULA_FACTOR",
+        "valueVo": {
+            "unit": {
+                "id": "1da20b9f-c3df-4041-8154-4e76a4fa2e2c",
+                "name": "千克二氧化碳当量/吨/千米",
+                "factor": "0.001",
+                "groupId": "5aaa6eca-e261-412d-bbf4-29291617340b",
+                "basicUnit": "5aaa6eca-qwer-fdsa-fgvb-12341617340b",
+                "elementIds": [
+                    "555935be-b4f6-4964-8a6f-0873876411da",
+                    "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                    "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                ],
+                "symbol": "kgCO2e/t/km",
+                "display": "kgCO_{2}e/t/km",
+                "groupName": "二氧化碳当量/质量/距离",
+                "elements": [
+                    {
+                        "id": "555935be-b4f6-4964-8a6f-0873876411da",
+                        "name": "千克二氧化碳当量",
+                        "factor": "1",
+                        "groupId": "7ebffc09-148a-43f5-9612-cd4315a5d16f",
+                        "basicUnit": "555935be-b4f6-4964-8a6f-0873876411da",
+                        "elementIds": [
+                            "555935be-b4f6-4964-8a6f-0873876411da"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "1bd42a47-fac5-4079-abf1-8da8f6dab8e9",
+                        "name": "吨",
+                        "factor": "1000",
+                        "groupId": "0da77a6b-798f-4990-97ce-33c1f9319571",
+                        "basicUnit": "efb892bf-f6ef-4f67-a4c9-327c18f6bc47",
+                        "elementIds": [
+                            "1bd42a47-fac5-4079-abf1-8da8f6dab8e9"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    },
+                    {
+                        "id": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "name": "千米",
+                        "factor": "1",
+                        "groupId": "8652402f-93b9-4432-bc96-aa6123823913",
+                        "basicUnit": "b6649b7e-2068-4a73-9772-651d8cb847bb",
+                        "elementIds": [
+                            "b6649b7e-2068-4a73-9772-651d8cb847bb"
+                        ],
+                        "symbol": null,
+                        "display": null
+                    }
+                ]
+            },
+            "value": "0.042",
+            "uncertainty": "1.00",
+            "score": "4"
+        },
+        "valueBeforeAllocate": null,
+        "distribution": false
+    }
+]
