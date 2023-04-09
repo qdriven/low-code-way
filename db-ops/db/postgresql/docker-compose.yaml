@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     container_name: pg_db
-    image: postgres:latest
+    image: postgres:14
     env_file:
       - .env
     environment:
