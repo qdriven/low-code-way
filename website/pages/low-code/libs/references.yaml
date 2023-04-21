@@ -1,0 +1,13 @@
+libs:
+  - name: autopoi
+    url: https://gitee.com/jeecg/autopoi.git
+    tags: excel
+
+tables:
+  - name: nocodb
+    url: https://github.com/nocodb/nocodb.git
+    tags: table-app
+
+database:
+  - name: prestd
+    url: 
