@@ -48,8 +48,8 @@ There are some tool categories:
 
 ## Testing tools
 
-- [mock server](testing/mock-server/stubby/) stubby: easy to setup mock for both HTTP and HTTP2
-- [mock server](testing/mock-server/hoverfly) capture and mock api traffic, here is [intro](docs/qa-lowcode/mock/hoverfly.md)
+- [mock server: stubby](testing/mock-server/stubby/) stubby: easy to setup mock for both HTTP and HTTP2
+- [mock server: hoverfly](testing/mock-server/hoverfly) capture and mock api traffic, here is [intro](docs/qa-lowcode/mock/hoverfly.md)
 
 ## Interal Tools Builder
 
