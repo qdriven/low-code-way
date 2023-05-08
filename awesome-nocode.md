@@ -1,8 +1,9 @@
-
 # Awesome NoCode / LowCode
+
 A curated list of delightful NoCode / LowCode applications and resources. For more awesomeness, check out [awesome](https://github.com/sindresorhus/awesome).
 
 [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) [![Build Status](https://travis-ci.org/kairichard/awesome-nocode-lowcode.svg)](https://travis-ci.org/kairichard/awesome-nocode-lowcode)
+
 </div>
 <br/>
 
@@ -62,7 +63,7 @@ A curated list of delightful NoCode / LowCode applications and resources. For mo
 - [Automate.io](https://automate.io) - Put your business on autopilot. Connect 100+ business apps.
 - [Blockspring](https://blockspring.com) - Supercharge your list building, reporting, and landing pages.
 - [Clay](https://clay.run) - Build tools & workflows to supercharge your team
-- [Cronit](https://cronit.app) - Plan, schedule and run recurring cron jobs online 
+- [Cronit](https://cronit.app) - Plan, schedule and run recurring cron jobs online
 - [IFTTT](https://ifttt.com) - Do more with the services you love.
 - [Integromat](https://integromat.com) - The glue of the internet.
 - [Linx](https://linx.software) - Low-code Development for IT Pros
@@ -74,7 +75,7 @@ A curated list of delightful NoCode / LowCode applications and resources. For mo
 - [Phantombuster](https://phantombuster.com) - A marketplace of simple to use no-code APIs
 - [pipedream](https://pipedream.com/) - The integration platform built for developers
 - [Simple scraper](https://simplescraper.io) - The web is your API
-- [stdlib](https://stdlib.com/) -  An online IDE for connecting APIs together
+- [stdlib](https://stdlib.com/) - An online IDE for connecting APIs together
 - [Tiller Money](https://www.tillerhq.com) - Your financial life in a spreadsheet, automatically updated each day.
 - [Tray](https://tray.io) - Advanced integration platform for connecting up the tools you use every day.
 - [Webmerge](https://www.webmerge.me/) - Document automation software
@@ -105,7 +106,6 @@ A curated list of delightful NoCode / LowCode applications and resources. For mo
 - [Loopple](https://www.loopple.com) - Drag and drop dashboard builder
 
 ## Chatbots
-
 
 - [Botnation](https://botnation.ai/en/) - Create chatbots, landbots, voicebots, callbots on Messenger, Web, Google Home, Phone device.
 - [Botsify](https://botsify.com) - Create your own automated chatbots online.
@@ -297,7 +297,7 @@ A curated list of delightful NoCode / LowCode applications and resources. For mo
 
 ## Websites
 
-- [appsmith_](https://www.appsmith.com/) - Frontend as a Service to build internal apps
+- [appsmith\_](https://www.appsmith.com/) - Frontend as a Service to build internal apps
 - [Bloggi](https://bloggi.co) - A simple blogging platform
 - [Bookmark](https://www.bookmark.com) - Create a Website with AI
 - [Grapedrop](https://grapedrop.com) - Free and custom websites and landing pages
@@ -339,6 +339,10 @@ A curated list of delightful NoCode / LowCode applications and resources. For mo
 - https://www.feval.ca/posts/logicapp-ci/
 - https://zapier.com/help/create/code-webhooks/use-javascript-code-in-zaps
 
+## BI
+
+- https://github.com/Kanaries/Rath.git
+
 ---
 
 # Contribute
@@ -352,3 +356,4 @@ I am providing code and resources in this repository to you under an open source
 [![CC0](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/cc-zero.svg)](https://creativecommons.org/publicdomain/zero/1.0/)
 
 To the extent possible under law, [Kai Richard König](https://kairichardkoenig.de) has waived all copyright and related or neighboring rights to this work.
+
