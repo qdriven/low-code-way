@@ -70,11 +70,6 @@ There are some tool categories:
 ## Draw tools
 
 - [excalidraw](https://github.com/excalidraw/excalidraw)
-## QA Tools
-
-- [Mock Server](qa-lowcode/mockp-server)
-- [k8s-for-docker-desktop](qa-lowcode/k8s-docker)
-
 ## Test Ops
 
 - [ansible-scipts](tester-ops/ansible)
