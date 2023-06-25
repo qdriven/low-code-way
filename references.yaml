@@ -1,0 +1,4 @@
+repos:
+  - https://github.com/openreplay/openreplay.git
+  - https://github.com/runbotics/runbotics.git
+  - https://gitee.com/lbgf/ks.git
