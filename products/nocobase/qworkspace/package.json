@@ -1,0 +1,31 @@
+{
+  "name": "qworkspace",
+  "private": true,
+  "workspaces": [
+    "packages/*/*"
+  ],
+  "scripts": {
+    "install":"nocobase install --lang=zh-CN",
+    "nocobase": "nocobase",
+    "pm": "nocobase pm",
+    "dev": "nocobase dev",
+    "start": "nocobase start",
+    "clean": "nocobase clean",
+    "build": "nocobase build",
+    "test": "nocobase test",
+    "postinstall": "nocobase postinstall",
+    "lint": "eslint ."
+  },
+  "resolutions": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "@nocobase/cli": "0.10.0-alpha.4",
+    "pg": "^8.7.3",
+    "pg-hstore": "^2.3.4"
+  },
+  "devDependencies": {
+    "@nocobase/devtools": "0.10.0-alpha.4"
+  }
+}
