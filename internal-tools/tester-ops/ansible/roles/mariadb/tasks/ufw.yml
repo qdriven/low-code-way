@@ -1,0 +1,2 @@
+- name: Allow useranalysis mariadb access
+  ufw: rule=allow port=3306 src=208.80.155.255

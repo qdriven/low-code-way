@@ -1,0 +1,2419 @@
+<?php
+/**
+ * Orain's playbook is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * Orain's playbook is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along
+ * with Orain's playbook.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+// Protect against web entry
+if ( !defined( 'MEDIAWIKI' ) ) {
+	exit;
+}
+
+// Force set $_SERVER['HTTPS'] if LB passes the HTTP_X_FORWARDED_PROTO header -- Addshore - 9 feb 2015
+if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https' ) {
+	$_SERVER['HTTPS'] = 'on';
+}
+
+$wgConf = new SiteConfiguration;
+$wgConf->suffixes = array( 'wiki' );
+$wgConf->localVHosts = array( '{{mysql_address}}' );
+
+// @note TBLSRC_LOCALPAGE and TBLSRC_URL are defined automatically by the TitleBlacklist entry file.
+//       therefore we use the below ORAIN constants for referencing the values in LocalSettings.php
+//       as the true constants don't get defined until after we want to use them.
+define( 'TBLSRC_LOCALPAGE_ORAIN', 1 );
+define( 'TBLSRC_URL_ORAIN', 2 );
+
+/**
+ * Define namespaces for all wikis
+ *
+ * @note These namespaces technically are defined across all wikis, they are simply not enabled everywhere.
+ * @note These namespaces should NEVER be removed unless all wikis that have ever used them have been deleted
+ */
+
+// extension/DPLforum
+// @note NS_FORUM and NS_FORUM_TALK are defined automatically by the DPLforum entry file.
+//       therefore we use the below ORAIN constants for referencing the values in LocalSettings.php
+//       as the true constants don't get defined until after we want to use them.
+define( 'NS_FORUM_ORAIN', 110 );
+define( 'NS_FORUM_TALK_ORAIN', 111 );
+// / extension/DPLforum
+
+// allthetropeswiki
+define( 'NS_TROPEWORKSHOP', 520 );
+define( 'NS_TROPEWORKSHOP_TALK', 521 );
+// / allthetropeswiki
+
+// botwiki
+define( 'NS_FRAMEWORK', 500 );
+define( 'NS_FRAMEWORK_TALK', 501 );
+define( 'NS_SCRIPT', 502 );
+define( 'NS_SCRIPT_TALK', 503 );
+define( 'NS_BOT', 504 );
+define( 'NS_BOT_TALK', 505 );
+define( 'NS_RUN', 506 );
+define( 'NS_RUN_TALK', 507 );
+// /botwiki
+
+// councilwiki
+define( 'NS_RESOLUTION', 522 );
+define( 'NS_RESOLUTION_TALK', 523 );
+define( 'NS_WORKSPACE', 524 );
+define( 'NS_WORKSPACE_TALK', 525 );
+// /councilwiki
+
+// grepobot
+define( 'NS_OP', 526 );
+define( 'NS_OP_TALK', 527 );
+// /grepobot
+
+// ircwiki
+define( 'NS_BLOG', 528);
+define( 'NS_BLOG_TALK', 529);
+// /ircwiki
+
+// metawiki (meta NSs are 400-500)
+define( 'NS_TECH', 400);
+define( 'NS_TECH_TALK', 401);
+// /metawiki
+
+// firstrobotixwiki (FLL,FTC,FRC,Team,Mentor,Coach,Partner,WikiInternal,Event)
+define( 'NS_FLL', 534);
+define( 'NS_FLL_TALK', 535);
+define( 'NS_FTC', 536);
+define( 'NS_FTC_TALK', 537);
+define( 'NS_FRC', 538);
+define( 'NS_FRC_TALK', 539);
+define( 'NS_TEAM', 540);
+define( 'NS_TEAM_TALK', 541);
+define( 'NS_MENTOR', 542);
+define( 'NS_MENTOR_TALK', 543);
+define( 'NS_COACH', 544);
+define( 'NS_COACH_TALK', 545);
+define( 'NS_PARTNER', 546);
+define( 'NS_PARTNER_TALK', 547);
+define( 'NS_WIKIINTERNAL', 548);
+define( 'NS_WIKIINTERNAL_TALK', 549);
+define( 'NS_EVENT', 550);
+define( 'NS_EVENT_TALK', 551);
+// /firstrobotixwiki
+
+// Reviwiki
+define( 'NS_SERVER', 526);
+define( 'NS_SERVER_TALK', 527);
+// /Reviwiki
+
+// sawiki
+define( 'NS_PORTAL', 516);
+define( 'NS_PORTAL_TALK', 517);
+// /sawiki
+
+// quantixwiki
+define( 'NS_QUANTIX', 530);
+define( 'NS_QUANTIX_TALK', 531);
+define( 'NS_QG', 532);
+define( 'NS_QG_Talk', 533);
+// /quantixwiki
+
+// tomegkozlekedowiki
+define( 'NS_SZTORI', 552);
+define( 'NS_SZTORI_TALK', 553);
+define( 'NS_ARCHIVUM', 554);
+define( 'NS_ARCHIVUM_TALK', 555);
+define( 'NS_ENGLISH', 556);
+define( 'NS_ENGLISH_TALK', 557);
+// /tomegkozlekedowiki
+
+// wikinambaswiki
+define( 'NS_OFICINA', 508 );
+define( 'NS_OFICINA_TALK', 509 );
+define( 'NS_PROJETO', 510 );
+define( 'NS_PROJETO_TALK', 511 );
+define( 'NS_ATIVIDADE', 512 );
+define( 'NS_ATIVIDADE_TALK', 513 );
+define( 'NS_ESTUDIO', 514 );
+define( 'NS_ESTUDIO_TALK', 515 );
+// /wikinambaswiki
+
+
+# Load the 'globalextensions' here
+require_once( "$IP/GlobalExtensions.php" );
+
+/**
+ * NOTE: When changing the below variable all caches need to be updated otherwise
+ * we will continue linking to old file locations on cached pages!
+ */
+$wmgUploadHostname = "static.orain.org";
+
+/**
+ * Define settings per wiki
+ * @see https://www.mediawiki.org/wiki/Manual:$wgConf
+ */
+$wgConf->settings = array(
+	// AbuseFilter
+	'wgAbuseFilterAnonBlockDuration' => array(
+		'default' => '3 months',
+	),
+	'wgAbuseFilterBlockDuration' => array(
+		'default' => 'indefinite',
+	),
+	'wgAbuseFilterCentralDB' => array(
+		'default' => 'metawiki',
+	),
+	'wgAbuseFilterEmergencyDisableThreshold' => array(
+		'default' => 0.1,
+	),
+	'wgAbuseFilterIsCentral' => array(
+		'default' => false,
+		'metawiki' => true,
+	),
+	// /AbuseFilter
+
+	// Ads
+	'wmgUseAds' => array(
+		'default' => false,
+		'extloadwiki' => true,
+		'testwiki' => true,
+	),
+	'wmgUseAdsAnon' => array(
+		'default' => false,
+		'extloadwiki' => true,
+		'testwiki' => true,
+	),
+	// /Ads
+
+	// Analytics
+	'wgGoogleAnalyticsAccount' => array(
+		'default' => 'UA-58596506-4',
+	),
+	'wgGoogleAnalyticsIgnoreSysops' => array(
+		'default' => false,
+	),
+	'wgGoogleAnalyticsIgnoreBots' => array(
+		'default' => false,
+	),
+	// /Analytics
+
+	// Anti-spam 
+	'wgAccountCreationThrottle' => array(
+		'default' => 6,
+	),
+	'wgCaptchaClass' => array(
+		'default' => 'ReCaptcha',
+	),
+	'wgReCaptchaPublicKey' => array(
+		'default' => '6LewqwETAAAAADZzJ7sUO3xmrad2eqDembTtvztK',
+	),
+	'wgReCaptchaPrivateKey' => array(
+		'default' => '{{recaptcha_private_key}}',
+	),
+	'wgSpamBlacklistFiles' => array(
+		'default' => array(
+			"DB: metawiki Spam_blacklist",
+		),
+	),
+	'wgTitleBlacklistSources' => array(
+		'default' => array(
+			array(
+				'type' => TBLSRC_LOCALPAGE_ORAIN,
+				'src' => 'MediaWiki:Titleblacklist',
+			),
+			array(
+				'type' => TBLSRC_URL_ORAIN,
+				'src' => '//meta.orain.org/w/index.php?title=Title_blacklist&action=raw',
+			),
+		),
+	),
+	// /Anti-spam
+
+	// BetaFeatures
+	'wmgUseBetaFeatures' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'donjonwiki' => true,
+		'extloadwiki' => true,
+		'netwiki' => true,
+		'wizardwiki' => true,
+	),
+	// /BetaFeatures
+
+	// Block
+	'wgBlockAllowsUTEdit' => array(
+		'default' => true,
+	),
+	'wmgUseTorBlock' => array(
+		'default' => true,
+		'extloadwiki' => true,
+		'private' => false,
+	),
+	// /Block
+
+	// Bigdelete
+	'wgDeleteRevisionsLimit' => array(
+		'default' => 2000, // Default bigdelete limit
+	),
+	// /Bigdelete
+
+	// Global block
+	'wgApplyGlobalBlocks' => array(
+		'default' => true,
+		'metawiki' => false,
+	),
+	// /Global block
+
+	// Cache
+	'wgEnableSidebarCache' => array(
+		'default' => true,
+		'bibbia2000wiki' => false,
+		'spiralwiki' => false, // This broke displaying of Collection portlets addshore 20-feb-2014 issue #173
+		'shepherdjournalwiki' => false, // Same as above
+	),
+	'wgHitcounterUpdateFreq' => array(
+		'default' => 30,
+	),
+	'wgMiserMode' => array(
+		'allthetropeswiki' => true,
+	),
+	'wgParserCacheExpireTime' => array(
+		'default' => 604800, // 7 days
+	),
+	'wgRevisionCacheExpiry' => array(
+		'default' => 259200, // 3 days
+	),
+	'wgSessionsInObjectCache' => array(
+		'default' => true,
+	),
+	'wgUseLocalMessageCache' => array(
+		'default' => false,
+	),
+	'wgUseFileCache' => array(
+		'default' => false,
+		// 'allthetropeswiki' => true, # Disable due to lack of disk space on prod7 --SPF
+		'extloadwiki' => true,
+	),
+	'wgResourceLoaderMaxage' => array(
+		'default' => array(
+			'versioned' => array(
+				'server' => 30 * 24 * 60 * 60, // 30 days
+				'client' => 30 * 24 * 60 * 60, // 30 days
+			),
+			'unversioned' => array(
+				'server' => 2 * 60 * 60, // 2 hours
+				'client' => 2 * 60 * 60, // 2 hours
+			),
+		),
+	),
+	'wgLocalisationCacheConf' => array(
+		'default' => array(
+			'class' => 'LocalisationCache',
+			'store' => 'files',
+			'storeDirectory' => "/tmp/mw-cache",
+			'manualRecache' => true,
+		),
+	),
+	// /Cache
+
+	// CentralAuth
+	'wgCentralAuthAutoLoginWikis' => array(
+		'default' => array(
+			'chemtalk.org' => 'chemtalkwiki',
+			'gbf.platinumdis.co' => 'granbluefantasywiki',
+			'permanentfuturelab.wiki' => 'permanentfuturelabwiki',
+			'rationalwiki.ssu.lt' => 'rationalwiki',
+			'wikimirsm.mateis.nl' => 'wikimirsmwiki',
+		),
+	),
+	'wgCentralAuthAutoMigrate' => array(
+		'default' => true,
+	),
+	'wgCentralAuthAutoNew' => array(
+		'default' => true,
+	),
+	'wgCentralAuthCookieDomain' => array(
+		'default' => '.orain.org',
+	),
+	'wgCentralAuthCookies' => array(
+		'default' => true,
+	),
+	'wgCentralAuthCreateOnView' => array(
+		'default' => true,
+	),
+	'wgCentralAuthLoginIcon' => array(
+	    'default' => '/usr/share/nginx/favicons/default.ico',
+	    'spiralwiki' => '/usr/share/nginx/favicons/spiral.wiki.ico',
+	),
+	'wgCentralAuthLoginWiki' => array(
+		'default' => 'loginwiki',
+	),
+	'wgCentralAuthSilentLogin' => array(
+		'default' => true,
+	),
+	'wgDisableUnmergedEditing' => array(
+		'default' => false,
+	),
+	'wgSiteMatrixSites' => array(
+		'default' => array(),
+	),
+	'wgSiteMatrixPrivateSites' => array(
+		'default' => "$IP/private.dblist",
+	),
+	// /CentralAuth
+
+	// CentralNotice
+	'wgNoticeInfrastructure' => array(
+		'default' => false,
+		'metawiki' => true,
+	),
+	'wgNoticeProjects' => array(
+		'default' => array(),
+		// NOTE: 'orain' group means official wikis
+		'metawiki' => array( 'orain', 'closed', 'private', 'public' ),
+	),
+	'wgCentralHost' => array(
+		'default' => '//meta.orain.org',
+	),
+	'wgCentralPagePath' => array(
+		'default' => '//meta.orain.org/w/index.php',
+	),
+	'wgNoticeProject' => array(
+		'default' => 'public',
+		'metawiki' => 'orain',
+		'extloadwiki' => 'orain',
+		'loginwiki' => 'orain',
+		// NOTE: private and closed groups are set further down
+	),
+	// /CentralNotice
+
+	// CheckUser
+	'wgCheckUserForceSummary' => array(
+		'default' => true,
+	),
+	// /CheckUser
+
+	// Database
+	'wgCompressRevisions' => array(
+		'default' => true,
+	),
+	'wgDBpassword' => array(
+		'default' => "{{mw_db_password}}",
+	),
+	'wgDBprefix' => array(
+		'default' => '',
+	),
+	'wgDBserver' => array( // HHVM errors using LB for Uploads?
+		'default' => "10.131.158.209",
+	),
+	'wgDBTableOptions' => array(
+		'default' => "ENGINE=InnoDB, DEFAULT CHARSET=binary",
+	),
+	'wgDBtype' => array(
+		'default' => 'mysql',
+	),
+	'wgDBuser' => array(
+		'default' => "{{mw_db_user}}",
+	),
+	'wgSharedDB' => array(
+		'default' => 'metawiki',
+	),
+	'wgSharedTables' => array(
+		'default' => array(),
+	),
+	// /Database
+
+	//Debug
+	'wgDebugComments' => array(
+		'default' => false,
+		'extloadwiki' => true,
+	),
+	// /Debug
+
+	// Email
+	'wgEmailAuthentication' => array(
+		'default' => true,
+	),
+	'wgEmergencyContact' => array(
+		'default' => 'noreply@orain.org',
+	),
+	'wgEnableEmail' => array(
+		'default' => true,
+	),
+	'wgEnableUserEmail' => array(
+		'default' => true,
+	),
+	'wgEnotifMinorEdits' => array(
+		'default' => true,
+	),
+	'wgEnotifUserTalk' => array(
+		'default' => true,
+	),
+	'wgEnotifWatchlist' => array(
+		'default' => true,
+	),
+	'wgPasswordSender' => array(
+		'default' => 'noreply@orain.org',
+	),
+	'wgSMTP' => array(
+		'default' => array(
+			'host' => '10.131.158.212',
+			'port' => 25,
+			'IDHost' => 'orain.org',
+			'auth' => false,
+			'username' => 'noreply',
+			'password' => '{{email_password}}',
+		),
+	),
+	// /Email
+
+	// Files
+	'wgEnableUploads' => array(
+		'default' => false,
+		'upload' => true,
+	),
+	'wgFileExtensions' => array(
+		'default' => array( 'gif', 'ico', 'jpeg', 'jpg', 'ogg', 'png', 'svg' ),
+		'+allthetropeswiki' => array( 'ogg', 'ogv', 'webm', 'oga' ),
+		'+bushidogempeijiwiki' => array( 'zip' ),
+		'+checkwiki' => array( 'pdf', 'doc' ),
+		'+councilwiki' => array( 'pdf' ),
+		'+gologwiki' => array( 'pdf' ),
+		'+hmwiki' => array( 'cml' ),
+		'+internalwiki' => array( 'pdf' ),
+		'+namuhwiki' => array( 'pdf' ),
+		'+nationalewiki' => array( 'pdf' ),
+		'+qumegalithwiki' => array( 'pdf' ),
+		'+redsosteniblewiki' => array( 'pdf' ),
+		'+spiralwiki'=> array( 'pdf' ),
+		'+tomegkozlekedowiki' => array( 'bmp', 'tif', 'tiff', 'pdf', 'zip', 'rar' ),
+	),
+	'wgAllowCopyUploads' => array(
+		'default' => false,
+		'gologwiki' => true,
+		'quantixwiki' => true,
+		'quantixdevwiki' => true,
+		'tomegkozlekedowiki' => true,
+	),
+	'wgAllowTitlesInSVG' => array(
+		'default' => true,
+	),
+	'wgCopyUploadsFromSpecialUpload' => array(
+		'default' => false,
+		'gologwiki' => true,
+		'quantixwiki' => true,
+		'quantixdevwiki' => true,
+		'tomegkozlekedowiki' => true,
+	),
+	'wgGenerateThumbnailOnParse' => array(
+		'default' => false,
+	),
+	'wmgUseInstantCommons' => array(
+		'default' => true,
+		'corruptionofchampionswiki' => false,
+		'fallofedenthegamewiki' => false,
+		'lovelivesiftwwiki' => false,
+		'trialsintaintedspacewiki' => false,
+		'ironperfectionwiki' => false,
+	),
+	// /Files
+
+	// Global Group Settings
+	'+wgAvailableRights' => array( // + to avoid any possible conflicts
+		'default' => array(
+			'debug', // Debugging for sysadmins
+			'editwidgets', // Widgets
+			'steward', // Allow this restriction level be added to the global usergroup
+			'torunblocked', // Allow this to be added to global groups
+		),
+	),
+	// /Global Group Settings
+
+	// GraphicsMagick
+	'wgImageMagickConvertCommand' => array(
+		'default' => "/usr/bin/convert",
+	),
+	'wgShellLocale' => array(
+		'default' => "en_US.utf8",
+	),
+	'wgUseImageMagick' => array(
+		'default' => true,
+	),
+	// /GraphicsMagick
+
+	// Group overrides
+	'defaultGroupOverrides' => array(
+		'default' => array(
+		),
+	),
+	'specificGroupOverrides' => array(
+		'default' => array(
+			'autoconfirmed' => array(
+				'skipcaptcha' => true,
+			),
+		),
+		'checkwiki' => array(
+			'*' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => true,
+			),
+			'trusted' => array(
+				'read' => true,
+				'edit' => true,
+				'editsemiprotected' => true,
+				'createpage' => true,
+				'createtalk' => true,
+				'upload' => true,
+				'reupload-own' => true,
+			),
+		),
+		'quantixdevwiki' => array(
+			'*' => array(
+				'read' => false,
+				'edit' => false,
+				'block' => false,
+			),
+			'user' => array(
+				'read' => false,
+				'edit' => false,
+				'block' => false,
+			),
+			'sysop' => array(
+				'read' => true,
+				'edit' => true,
+				'block' => true,
+			),
+		),
+		'rachopediawiki' => array(
+			'*' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'editor' => array(
+				'read' => true,
+				'edit' => true,
+			),
+		),
+		'serietvwiki' => array(
+			'*' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'user' => array(
+				'edit' => false,
+			),
+			'editor' => array(
+				'edit' => true,
+			),
+			'bureaucrat' => array(
+				'edit' => true,
+			),
+		),
+		'studieveiledermedisinwiki' => array(
+			'*' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => false,
+			),
+			'editor' => array(
+				'read' => true,
+				'edit' => true,
+			),
+			'sysop' => array(
+				'read' => true,
+				'edit' => true,
+			),
+		),
+		'private' => array(
+			'*' => array(
+				'read' => false,
+				'edit' => false,
+			),
+			'user' => array(
+				'read' => false,
+				'edit' => false,
+			),
+			'member' => array(
+				'read' => true,
+				'edit' => true,
+			),
+			'sysop' => array(
+				'read' => true,
+				'edit' => true,
+			),
+			'bureaucrat' => array(
+				'read' => true,
+				'edit' => true,
+			),
+		),
+		'closed' => array(
+			'*' => array(
+				'edit' => false,
+				'createaccount' => false,
+			),
+			'autoconfirmed' => array(
+				'editsemiprotected' => false,
+				'patrol' => false,
+			),
+			'autopatrolled' => array(
+				'patrol' => false,
+			),
+			'bot' => array(
+				'editsemiprotected' => false,
+			),
+			'rollbacker' => array(
+				'rollback' => false,
+			),
+			'sysop' => array(
+				'abusefilter-modify' => false,
+				'abusefilter-modify-restricted' => false,
+				'abusefilter-revert' => false,
+				'block' => false,
+				'blockemail' => false,
+				'createaccount' => false,
+				'delete' => false,
+				'editinterface' => false,
+				'editprotected' => false,
+				'editsemiprotected' => false,
+				'globalblock-whitelist' => false,
+				'import' => false,
+				'importupload' => false,
+				'move' => false,
+				'movefile' => false,
+				'move-rootuserpages' => false,
+				'move-subpages' => false,
+				'nuke' => false,
+				'patrol' => false,
+				'protect' => false,
+				'reupload' => false,
+				'reupload-shared' => false,
+				'rollback' => false,
+				'unblockself' => false,
+				'undelete' => false,
+				'upload' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'move' => false,
+				'move-rootuserpages' => false,
+				'move-subpages' => false,
+				'movefile' => false,
+				'reupload' => false,
+				'reupload-shared' => false,
+				'upload' => false,
+			),
+		),
+	),
+	// /Group overrides
+
+	// HideUser
+	'wgHideUserContribLimit' => array(
+		'default' => 1000,
+	),
+	// /HideUser
+
+	//Hooks
+	'wgSpecialVersionShowHooks' => array(
+		'default' => false,
+		'extloadwiki' => true,
+	),
+	// /Hooks
+
+	// Imports
+	'wgImportSources' => array(
+		'default' => array(
+			'metawiki',
+			'testwiki'
+		),
+		'+metawiki' => array(
+			'techwiki'
+		),
+		'+verkeerwiki' => array(
+			'jossewiki'
+		),
+	),
+	// /Imports
+
+	// Keys
+	'wgSecretKey' => array(
+		'default' => '{{wgSecretKey}}',
+	),
+	'wgUpgradeKey' => array(
+		'default' => '{{wgUpgradeKey}}',
+	),
+	// /Keys
+
+	// Language
+	'wgLanguageCode' => array(
+		'default' => 'en',
+	),
+	// /Language
+
+	// License
+	'wgRightsIcon' => array(
+		'default' => "//$wmgUploadHostname/common/skins/common/images/cc-by-sa.png",
+		'diavwiki' => null,
+		'spiralwiki' => "//$wmgUploadHostname/common/skins/common/images/cc-0.png",
+		'corruptionofchampionswiki' => "//$wmgUploadHostname/common/skins/common/images/cc-by-nc-sa.png",
+		'fallofedenthegamewiki' => "//$wmgUploadHostname/common/skins/common/images/cc-by-nc-sa.png",
+		'lovelivesiftwwiki' => "//$wmgUploadHostname/common/skins/common/images/cc-by-nc-sa.png",
+		'tomegkozlekedowiki' => null,
+		'trialsintaintedspacewiki' => "//$wmgUploadHostname/common/skins/common/images/cc-by-nc-sa.png",
+	),
+	'wgRightsPage' => array(
+		'default' => '',
+	),
+	'wgRightsText' => array(
+		'default' => 'Creative Commons Attribution Share Alike',
+		'anarchismwiki' => 'CC0 Public Domain',
+		'diavwiki' => null,
+		'spiralwiki' => 'CC0 Public Domain',
+		'corruptionofchampionswiki' => 'Creative Commons Attribution NonCommerical Share Alike',
+		'fallofedenthegamewiki' => 'Creative Commons Attribution NonCommerical Share Alike',
+		'lovelivesiftwwiki' => 'åµä½å±ç¨ Attribution-NonCommercial-ShareAlike',
+		'tomegkozlekedowiki' => null,
+		'trialsintaintedspacewiki' => 'Creative Commons Attribution NonCommerical Share Alike',
+	),
+	'wgRightsUrl' => array(
+		'default' => 'https://creativecommons.org/licenses/by-sa/3.0/',
+		'anarchismwiki' => 'https://creativecommons.org/publicdomain/zero/1.0/',
+		'diavwiki' => null,
+		'spiralwiki' => 'https://creativecommons.org/publicdomain/zero/1.0/',
+		'corruptionofchampionswiki' => 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+		'fallofedenthegamewiki' => 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+		'firstrobotixwiki' => 'https://creativecommons.org/licenses/by-sa/4.0/',
+		'lovelivesiftwwiki' => 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+		'tomegkozlekedowiki' => null,
+		'trialsintaintedspacewiki' => 'https://creativecommons.org/licenses/by-nc-sa/3.0/',
+	),
+	// /License
+
+	// MassMessage
+	'wgNamespacesToPostIn' => array(
+		'default' => array( NS_PROJECT, NS_USER_TALK ),
+		'+metawiki' => array( NS_MAIN ),
+	),
+	'wgNamespacesToConvert' => array(
+		'default' => array( NS_USER => NS_USER_TALK ),
+	),
+	'wgMassMessageAccountUsername' => array(
+		'default' => 'OrainMessenger',
+	),
+	'wgAllowGlobalMessaging' => array(
+		'default' => false,
+		'metawiki' => true,
+	),
+	// /MassMessage
+
+	// Misc. extensions
+	'ceAllowConfirmedEmail' => array(
+		'default' => true,
+	),
+	'wmgArchivedWiki' => array(
+		'default' => false,
+		'polymetawiki' => true,
+	),
+	'wmgClosedWiki' => array(
+		'default' => false,
+		'closed' => true,
+	),
+	'wgInterwikiViewOnly' => array(
+		'default' => true,
+		'metawiki' => false,
+	),
+	'wgMFAutodetectMobileView' => array(
+		'default' => true,
+	),
+	'wmgPrivateWiki' => array(
+		'default' => false,
+		'private' => true,
+	),
+	'wgThanksConfirmationRequired' => array(
+		'default' => true,
+		'spiralwiki' => false,
+		'testwiki' => false,
+	),
+	'wgScribuntoUseGeSHi' => array(
+		'default' => true,
+	),
+	'wgScribuntoDefaultEngine' => array(
+		'default' => 'luastandalone',
+	),
+	'wgSquidServers' => array(
+		'default' => array( '10.131.243.243' ),
+	),
+    	'wmgUseATTImages' => array(
+        	'default' => false,
+	),
+	'wmgUseCharInsert' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'europawiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'keionrailwiki' => true,
+		'mediawikitesterswiki' => true,
+		'tomegkozlekedowiki' => true,
+		'verkeerwiki' => true,
+		'worldnewswiki' => true,
+	),
+	'wmgUseCodeEditor' => array(
+		'default' => false,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'allthetropeswiki' => true,
+		'mediawikitesterswiki' => true,
+		'wikinambaswiki' => true,
+	),
+	'wmgUseCollectionPDF' => array(
+		'default' => false,
+		'allthetropeswiki'  => false,
+		'bibbia2000wiki' => true,
+		'extloadwiki' => true, // All extensions enabled by default
+		'fmucanatwiki' => true,
+		'shepherdjournalwiki' => true,
+		'spiralwiki' => true,
+		'wikiconstituciowiki' => true,
+	),
+	'wmgUseDismissableSiteNotice' => array(
+		'default' => true,
+		'eotwiki' => false,
+		'extloadwiki' => true, // All extensions enabled by default
+	),
+	'wmgUseDPLforum' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'memewiki' => true,
+		'metawiki' => true,
++		'quantixdevwiki' => true,
+		'quantixwiki' => true,
+		'wh40kwiki' => true,
+	),
+	'wmgUseEchoPack' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'bgowiki' => true,
+		'computechwiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'memewiki' => true,
+		'metawiki' => true,
+		'testwiki' => true,
+		'spiralwiki' => true,
+		'jossewiki' => true,
+		'tomegkozlekedowiki' => true,
+	),
+	'wmgUseLiquidThreads' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'wikinambaswiki' => true,
+	),
+	'wmgUseOrainFooter' => array(
+		'default' => true,
+		'nationalewiki' => false,
+	),
+	'wmgUseMath' => array(
+		'default' => false,
+		'cwsplanetwiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'jdwiki' => true,
+		'networkwiki' => true,
+		'pmr2014wiki' => true,
+		'workedexamplewiki' => true,
+	),
+	'wmgUseMobileFrontend' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'keionrailwiki' => true,
+		'spiralwiki' => true,
+		'wikiconstituciowiki' => true,
+		'wikinambaswiki' => true,
+	),
+	'wmgUseQuiz' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'memewiki' => true,
+	),
+	'wmgUseReplaceText' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'gamewiki' => true,
+		'mediawikitesterswiki' => true,
+		'poserdazfreebieswiki' => true,
+	),
+	'wmgUseTabber' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'botwiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'memewiki' => true,
+		'riderpediawiki' => true,
+	),
+	'wmgUseTimedMediaHandler' => array(
+		'default' => false,
+		'allthetropeswiki' => false,		
+		'bgowiki' => true,
+		'eotwiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'lovelivesiftwwiki' => true,
+	),
+	'wmgUseWikiEditor' => array(
+		'default' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'nationalewiki' => false,
+		'wikinambaswiki' => true,
+	),
+	// /Misc. extensions
+	
+
+	// Misc. settings
+	'wgExternalLinkTarget' => array(
+		'default' => false,
+		'rachopediawiki' => '_blank',
+	),
+	// /Misc. settings
+
+	// Names
+	'wgContentNamespaces' => array(
+		'botwiki' => array( NS_BOT, NS_FRAMEWORK, NS_SCRIPT ),
+	),
+	'wgExtraNamespaces' => array(
+		'allthetropeswiki' => array(
+			NS_TROPEWORKSHOP => 'Trope_Workshop',
+			NS_TROPEWORKSHOP_TALK => 'Trope_Workshop_talk',
+			NS_FORUM_ORAIN => 'Forum', // NS_FORUM_ORAIN should === NS_FORUM
+			NS_FORUM_TALK_ORAIN => 'Forum_talk', // NS_FORUM_TALK_ORAIN should === NS_FORUM_TALK
+		),
+		'botwiki' => array(
+			NS_BOT => 'Bot',
+			NS_BOT_TALK => 'Bot_talk',
+			NS_FRAMEWORK => 'Framework',
+			NS_FRAMEWORK_TALK => 'Framework_talk',
+			NS_RUN => 'Run',
+			NS_RUN_TALK => 'Run_talk',
+			NS_SCRIPT => 'Script',
+			NS_SCRIPT_TALK => 'Script_talk',
+		),
+		'councilwiki' => array(
+			NS_RESOLUTION => 'Resolution',
+			NS_RESOLUTION_TALK => 'Resolution_talk',
+			NS_WORKSPACE => 'Workspace',
+			NS_WORKSPACE_TALK => 'Workspace_talk',
+		),
+		'grepobotwiki' => array(
+			NS_OP => 'Op',
+			NS_OP_TALK => 'Op_talk',
+		),
+		'firstrobotixwiki' => array(
+			NS_FLL => 'FLL',
+			NS_FLL_TALK => 'FLL_talk',
+			NS_FTC => 'FTC',
+			NS_FTC_TALK => 'FTC_talk',
+			NS_FRC => 'FRC',
+			NS_FRC_TALK => 'FRC_talk',
+			NS_TEAM => 'Team',
+			NS_TEAM_TALK => 'Team_talk',
+			NS_MENTOR => 'Mentor',
+			NS_MENTOR_TALK => 'Mentor_talk',
+			NS_COACH => 'Coach',
+			NS_COACH_TALK => 'Coach_talk',
+			NS_PARTNER => 'Partner',
+			NS_PARTNER_TALK => 'Partner_talk',
+			NS_WIKIINTERNAL => 'WikiInternal',
+			NS_WIKIINTERNAL_TALK => 'WikiInternal_talk',
+			NS_EVENT => 'Event',
+			NS_EVENT_TALK => 'Event_talk',
+		),
+		'ircwiki' => array(
+			NS_BLOG => 'Blog',
+			NS_BLOG_TALK => 'Blog_talk',
+		),
+		'metawiki' => array(
+			NS_TECH => 'Tech',
+			NS_TECH_TALK => 'Tech_talk',
+			NS_FORUM_ORAIN => 'Forum', // NS_FORUM_ORAIN should === NS_FORUM
+			NS_FORUM_TALK_ORAIN => 'Forum_talk', // NS_FORUM_TALK_ORAIN should === NS_FORUM_TALK
+		),
+        	'reviwiki' => array(
+            		NS_SERVER => 'ìë²',
+            		NS_SERVER_TALK => 'ìë²í ë¡ ',
+        	),
+        	'sawiki' => array(
+            		NS_PORTAL => 'Portal',
+            		NS_PORTAL_TALK => 'Portal_talk',
+        	),
+		'tomegkozlekedowiki' => array(
+			NS_SZTORI => 'Sztori',
+			NS_SZTORI_TALK => 'Sztorivita',
+			NS_ARCHIVUM => 'Archívum',
+			NS_ARCHIVUM_TALK => 'Archívumvita',
+			NS_ENGLISH => 'ENG',
+			NS_ENGLISH_TALK => 'ENG-talk',
+			NS_PROJECT => 'TkWiki',
+			NS_PROJECT_TALK => 'TkWiki-vita',
+		),
+		'wikinambaswiki' => array(
+			NS_OFICINA => 'Oficina',
+			NS_OFICINA_TALK => 'Oficina_DiscussÃ£o',
+			NS_PROJETO => 'Projeto',
+			NS_PROJETO_TALK => 'Projeto_DiscussÃ£o',
+			NS_ATIVIDADE => 'Atividade',
+			NS_ATIVIDADE_TALK => 'Atividade_DiscussÃ£o',
+			NS_ESTUDIO => 'EstÃºdio',
+			NS_ESTUDIO_TALK => 'EstÃºdio_DiscussÃ£o',
+		),
+	),
+	'wgMetaNamespace' => array(
+		'metawiki' => 'Meta',
+		'lovelivesiftwwiki' => 'LoveLive_學園偶像祭_台灣伺服器',
+	),
+	'wgNamespaceAliases' => array(
+		'allthetropeswiki' => array(
+			'YKTTW' => 520,
+			'ATT' => NS_PROJECT,
+		),
+		'farmingsimulatorwiki' => array(
+			'FS' => NS_PROJECT,
+		),
+		'ironperfectionwiki' => array(
+			'IP' => NS_PROJECT,
+		),
+		'keionrailwiki' => array(
+			'ì¬' => NS_USER,
+			'ì¬í ' => NS_USER_TALK,
+		),
+		'reviwiki' => array(
+			'ì¬' => NS_USER,
+			'ì¬í ' => NS_USER_TALK,
+			'Server' => NS_SERVER,
+			'Server_talk' => NS_SERVER_TALK,
+		),
+		'quantixwiki' => array(
+			'QG' => NS_PROJECT,
+			'QG_Talk' => NS_PROJECT_TALK,
+			'Quantix' => NS_PROJECT,
+			'Quantix_Talk' => NS_PROJECT_TALK,
+		),
+		'tomegkozlekedowiki' => array(
+			'TkWiki' => NS_PROJECT,
+			'TkWiki_talk' => NS_PROJECT_TALK,
+		),
+	),
+	'+wgNamespacesWithSubpages' => array(
+		'default' => array(
+			NS_TEMPLATE => true,
+		),
+		'+allthetropeswiki' => array(
+			NS_MAIN => true,
+			NS_FORUM_ORAIN => true, // NS_FORUM_ORAIN should === NS_FORUM
+		),
+		'+botwiki' => array(
+			NS_BOT => true,
+			NS_BOT_TALK => true,
+			NS_CATEGORY => true,
+			NS_FRAMEWORK => true,
+			NS_FRAMEWORK_TALK => true,
+			NS_RUN => true,
+			NS_RUN_TALK => true,
+			NS_SCRIPT => true,
+			NS_SCRIPT_TALK => true,
+		),
+		'+councilwiki' => array(
+			NS_RESOLUTION => true,
+			NS_WORKSPACE => true,
+		),
+		'+firstrobotixwiki' => array(
+			NS_FLL => true,
+			NS_FTC => true,
+			NS_FRC => true,
+			NS_TEAM => true,
+			NS_MENTOR => true,
+			NS_COACH => true,
+			NS_PARTNER => true,
+			NS_WIKIINTERNAL => true,
+			NS_EVENT => true,
+		),
+		'+internalwiki' => array(
+			NS_MAIN => true,
+		),
+		'+mediawikitesterswiki' => array(
+			NS_MAIN => true,
+		),
+		'+metawiki' => array(
+			NS_MAIN => true,
+			NS_FORUM_ORAIN => true, // NS_FORUM_ORAIN should === NS_FORUM
+			NS_TECH => true,
+		),
+		'+quantixwiki' => array(
+			NS_MAIN => true,
+			NS_PROJECT => true,
+			'QG' => true,
+			'Quantix' => true,
+		),
+		'+reviwiki' => array(
+			NS_MAIN => true,
+			NS_SERVER => true,
+		),
+		'+sawiki' => array(
+			NS_PORTAL => true,
+			NS_PORTAL_TALK => true,
+		),
+		'+techwiki' => array(
+			NS_MAIN => true,
+		),
+		'+tomegkozlekedowiki' => array(
+			NS_ARCHIVUM => true,
+			NS_ARCHIVUM_TALK => true,
+		),
+		'+wikinambaswiki' => array(
+			NS_OFICINA => true,
+			NS_OFICINA_TALK => true,
+			NS_PROJETO => true,
+			NS_PROJETO_TALK => true,
+			NS_ATIVIDADE => true,
+			NS_ATIVIDADE_TALK => true,
+			NS_ESTUDIO => true,
+			NS_ESTUDIO_TALK => true,
+		),
+	),
+	'wgSitename' => array(
+		'default' => 'Unconfigured',
+	),
+	// /Names
+
+	// OAuth
+	'wgMWOAuthCentralWiki' => array(
+		'default' => 'metawiki',
+	),
+	'wgMWOAuthSecureTokenTransfer' => array(
+		'default' => true,
+	),
+	'wgMWOAuthSharedUserSource' => array(
+		'default' => 'CentralAuth',
+	),
+	// /OAuth
+
+	// ParserFunctions
+	'wgPFEnableStringFunctions' => array(
+		'default' => true,
+	),
+	// /ParserFunctions
+
+	// Performance
+	'wgDisableCounters' => array(
+		'default' => true,
+	),
+	// /Performance
+	
+	// Permissions
+	'wgAddGroups' => array(
+		'default' => array(
+			'bureaucrat' => array(
+				'autopatrolled',
+				'bot',
+				'bureaucrat',
+				'confirmed',
+				'rollbacker',
+				'sysop',
+			),
+			'sysop' => array(
+				'autopatrolled',
+				'confirmed',
+				'rollbacker',
+			),
+		),
+		'+grepobotwiki' => array(
+			'bureaucrat' => array(
+				'botop',
+			),
+		),
+		'+private' => array(
+			'bureaucrat' => array(
+				'member',
+			),
+			'sysop' => array(
+				'member',
+			),
+		),
+		'+firstrobotixwiki' => array(
+			'bureaucrat' => array(
+				'coach',
+				'official',
+				'teammember',
+				'mentor',
+			),
+			'sysop' => array(
+				'coach',
+				'official',
+				'teammember',
+				'mentor',
+			),
+		),
+		'+qumegalithwiki' => array(
+			'sysop' => array(
+				'member',
+			),
+		),
+		'+quantixdevwiki' => array(
+			'owner' => array(
+				'owner',
+				'bureaucrat',
+				'sysop',
+				'coder',
+				'member',
+			),
+			'bureaucrat' => array(
+				'coder',
+				'member',
+			),
+			'coder' => array(
+				'coder',
+				'member',
+			),
+		),
+		'+rachopediawiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+		'+serietvwiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+		'+studieveiledermedisinwiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+		'+testwiki' => array(
+			'interwikitest' => array(
+				'sysop',
+				'bureaucrat',
+			),
+		),
+	),
+	'wgAutoConfirmAge' => array(
+		'default' => 111600, // 31 h * 60 min/h * 60 s/min
+		'reviwiki' => 259200,
+	),
+	'wgAutoConfirmCount' => array(
+		'default' => 5,
+		'reviwiki' => 20,
+	),
+	'+wgGroupPermissions' => array(
+		'default' => array(
+			'*' => array(
+				'abusefilter-log' => true,
+				'abusefilter-log-detail' => true,
+				'abusefilter-view' => true,
+			),
+			'autoconfirmed' => array(
+				'patrol' => true,
+				'skipcaptcha' => true,
+				'upload' => true,
+				'upload_by_url' => true,
+			),
+			'autopatrolled' => array(
+				'autopatrol' => true,
+				'patrol' => true,
+				'skipcaptcha' => true,
+			),
+			'bot' => array(
+				'noanalytics' => true,
+			),
+			'checkuser' => array(
+				// Leaks IP addresses
+				'abusefilter-private' => true,
+			),
+			'emailconfirmed' => array(
+				'skipcaptcha' => true,
+			),
+			'importer' => array(
+				'import' => true,
+				'importupload' => true,
+			),
+			'oversight' => array(
+				'abusefilter-hidden-log' => true,
+				'abusefilter-hide-log' => true,
+				'browsearchive' => true,
+				'deletedhistory' => true,
+				'deletedtext' => true,
+				'deletelogentry' => true,
+				'deleterevision' => true,
+				'hideuser' => true,
+				'suppressionlog' => true,
+				'suppressrevision' => true,
+			),
+			'rollbacker' => array(
+				'autoconfirmed' => true,
+				'rollback' => true,
+			),
+			'sysop' => array(
+				'abusefilter-modify' => true,
+				'abusefilter-modify-restricted' => true,
+				'abusefilter-revert' => true,
+				'deletelogentry' => true,
+				'deleterevision' => true,
+				'massmessage' => false,
+				'rollback' => true,
+			),
+			'user' => array(
+				'user' => true, // Enable a new restriction level globally
+			),
+		),
+		'+archivoespiralwiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+corruptionofchampionswiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'autoconfirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+fallofedenthegamewiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'autoconfirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+firstrobotixwiki' => array(
+			'mentor' => array(
+				'read' => true,
+			),
+			'teammember' => array(
+				'read' => true,
+			),
+			'official' => array(
+				'read' => true,
+			),
+			'coach' => array(
+				'read' => true,
+			),
+		),
+		'+goldcraftmcwiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+gologwiki' => array(
+			'sysop' => array(
+				'upload_by_url' => true,
+			),
+		),
+		'+grepobotwiki' => array(
+			'botop' => array(
+				'read' => true,
+			),
+		),
+		'+nationalewiki' => array(
+			'*' => array(
+				'edit' => false,
+			),
+		),
+		'+poserdazfreebieswiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => true,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'confirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+qumegalithwiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'member' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+quantixwiki' => array(
+			'bureaucrat' => array(
+				'bureaucrat' => true,
+				'protect' => true,
+				'upload_by_url' => true,
+			),
+			'sysop' => array(
+				'upload_by_url' => true,
+			),
+		),
+		'+ironperfectionwiki' => array(
+			'bureaucrat' => array(
+				'bureaucrat' => true,
+				'protect' => true,
+			),
+		),
+		'+keionrailwiki' => array(
+			'user' => array(
+				'movefile' => false,
+			),
+		),
+		'loginwiki' => array(
+			'*' => array(
+				'createtalk' => false,
+				'centralauth-autoaccount' => true,
+				'read' => true, // Make sure read rights are present
+			),
+			'user' => array(
+				'createpage' => false,
+				'read' => true, // Make sure read rights are present
+				'edit' => false,
+			),
+		),
+		'+metawiki' => array(
+			'steward' => array(
+				'abusefilter-modify-global' => true,
+				'centralauth-lock' => true,
+				'centralauth-oversight' => true,
+				'centralauth-rename' => true,
+				'centralauth-unmerge' => true,
+				'createwiki' => true,
+				'globalblock' => true,
+				'globalunblock' => true,
+				'interwiki' => true,
+				'massmessage' => true,
+				'noratelimit' => true,
+				'userrights' => true,
+				'userrights-interwiki' => true,
+			),
+			'sysop' => array(
+				'interwiki' => true, // Allow sysops to edit interwiki data -John
+			),
+			'wikicreator' => array(
+				'createwiki' => true,
+				'autopatrol' => true,
+			),
+			'user' => array(
+				'mwoauthproposeconsumer' => true,
+				'mwoauthupdateownconsumer' => true,
+			),
+		),
+		'+reviwiki' => array(
+			'*' => array(
+				'createpage' => false,
+			),
+			'user' => array(
+				'createpage' => false,
+				'movefile' => false,
+			),
+			'autoconfirmed' => array(
+				'createpage' => true,
+				'patrol' => false,
+			),
+		),
+		'+riderpediawiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'autoconfirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+rightwiki' => array(
+                        '*' => array(
+                                'edit' => false,
+                                'createpage' => false,
+                                'createtalk' => false,
+                        ),
+                        'user' => array(
+                                'edit' => true,
+                                'createpage' => true,
+                                'createtalk' => true,
+                        ),
+                        'sysop' => array(
+                                'edit' => true,
+                                'createpage' => true,
+                                'createtalk' => true,
+                        ),
+		),
+		'+romtamwiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'autoconfirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+szhwiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+techwiki' => array(
+			'user' => array(
+				'createpage' => false,
+				'edit' => false,
+			),
+		),
+		'+testwiki' => array(
+			'bureaucrat' => array(
+				'unblockself' => true, // Consensus per https://test.orain.org/o/j
+			),
+			'interwikitest' => array(
+				'read' => true, //so it can be assigned
+			),
+		),
+	        '+trialsintaintedspacewiki' => array(
+			'*' => array(
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'user' => array(
+				'read' => true,
+				'edit' => false,
+				'createpage' => false,
+				'createtalk' => false,
+			),
+			'autoconfirmed' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+			'sysop' => array(
+				'edit' => true,
+				'createpage' => true,
+				'createtalk' => true,
+			),
+		),
+		'+quantixdevwiki' => array(
+			'owner' => array(
+				'owner' => true,
+				'read' => true,
+				'edit' => true,
+				'editprotected' => true,
+				'editsemiprotected' => true,
+				'protect' => true,
+				'block' => true,
+				'unblockself' => true,
+				'upload_by_url' => true,
+			),
+			'bureaucrat' => array(
+				'bureaucrat' => true,
+				'read' => true,
+				'edit' => true,
+				'protect' => true,
+				'unblockself' => true,
+				'upload_by_url' => true,
+			),
+			'coder' => array(
+				'coder' => true,
+				'read' => true,
+				'protect' => true,
+				'edit' => true,
+				'editsemiprotected' => true,
+				'editprotected' => true,
+				'upload_by_url' => true,
+			),
+			'sysop' => array(
+				'upload_by_url' => true,
+			),
+		),
+	),
+	'wgRemoveGroups' => array(
+		'default' => array(
+			'bureaucrat' => array(
+				'autopatrolled',
+				'bot',
+				'confirmed',
+				'member',
+				'rollbacker',
+				'sysop',
+			),
+			'sysop' => array(
+				'autopatrolled',
+				'confirmed',
+				'member',
+				'rollbacker',
+			),
+			'steward' => array(
+				'autopatrolled',
+				'confirmed',
+				'donor',
+				'vip',
+			),
+		),
+		'+grepobot' => array(
+			'bureaucrat' => array(
+				'botop',
+			),
+		),
+		'+private' => array(
+			'bureaucrat' => array(
+				'member',
+			),
+			'sysop' => array(
+				'member',
+			),
+		),
+		'+firstrobotixwiki' => array(
+			'bureaucrat' => array(
+				'coach',
+				'official',
+				'teammember',
+				'mentor',
+			),
+			'sysop' => array(
+				'coach',
+				'official',
+				'teammember',
+				'mentor',
+			),
+		),
+		'+quantixdevwiki' => array(
+			'owner' => array(
+				'bureaucrat',
+				'sysop',
+				'coder',
+				'member',
+			),
+			'bureaucrat' => array(
+				'coder',
+				'member',
+			),
+			'coder' => array(
+				'coder',
+				'member',
+			),
+		),
+		'+qumegalithwiki' => array(
+			'sysop' => array(
+				'member',
+			),
+		),
+		'+rachopediawiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+		'+serietvwiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+		'+studieveiledermedisinwiki' => array(
+			'bureaucrat' => array(
+				'editor',
+			),
+		),
+	),
+	'wmgDisableAnonEditing' => array(
+		'default' => false,
+		'actualismwiki' => true,
+		'aleeiouswiki' => true,
+		'allthetropeswiki' => true,
+		'cilirowiki' => true,
+		'encyclopediamuricanawiki' => true,
+		'granbluefantasywiki' => true,
+		'nationalewiki' => true,
+		'hyperiondevwiki' => true,
+		'krswwiki' => true,
+		'loginwiki' => true,
+		'peachywiki' => true,
+		'perronwiki' => true,
+		'poserdazfreebieswiki' => true,
+		'reviwiki' => true,
+		'rachopediawiki' => true,
+		'techwiki' => true,
+		'tunavorkwiki' => true,
+		'studieveiledermedisinwiki' => true,
+		'squaredanceideaswiki' => true,
+		'szkwiki' => true,
+		'tomegkozlekedowiki' => true,
+		'xenimuswiki' => true,
+	),
+	// /Permissions
+
+	// Piwik
+	'wmgPiwikSiteID' => array(
+		'default' => false,
+	//	'allthetropeswiki' => 3,
+	//	'keionrailwiki' => 4,
+	//	'metawiki' => 1,
+	//	'testwiki' => 2,
+	),
+	// /Piwik
+
+	// Profiling
+	'wgEnableProfileInfo' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+		'metawiki' => true,
+	),
+	// /Profiling
+
+	// Redirects
+	'wgFixDoubleRedirects' => array(
+		'default' => false,
+		'allthetropeswiki' => true,
+	),
+	// /Redirects
+
+	// Restrictions
+	'+wgRestrictionLevels' => array(
+		'default' => array(
+			'user',
+			'steward',
+		),
+		'+metawiki' => array(
+			'createwiki',
+		),
+		'+ironperfectionwiki' => array(
+			'bureaucrat',
+		),
+		'+quantixdevwiki' => array(
+			'bureaucrat',
+			'coder',
+			'owner',
+		),
+		'+quantixwiki' => array(
+			'bureaucrat',
+		),
+	),
+	'+wgRestrictionTypes' => array(
+		'default' => array(
+			'delete'
+		),
+	),
+	'$wgRestrictDisplayTitle' => array(
+		'default' => true,
+		'checkwiki' => false,
+		'portalwiki' => false,
+	),
+	// /Restrictions
+
+	// Robots
+	'wgDefaultRobotPolicy' => array(
+		'default' => 'index,follow',
+		'internalwiki' => 'noindex,nofollow',
+	),
+	// /Robots
+
+	// Server
+	'wgArticlePath' => array(
+		'default' => '/wiki/$1',
+	),
+	'wgDisableOutputCompression' => array(
+		'default' => true,
+	),
+	'wgJobRunRate' => array(
+		'default' => 0,
+	),
+	'wgResourceLoaderMaxQueryLength' => array(
+		'default' => -1,
+	),
+	'wgScriptExtension' => array(
+		'default' => '.php',
+	),
+	'wgScriptPath' => array(
+		'default' => '/w',
+	),
+	'wgServer' => array(
+		'default' => '//$lang.orain.org',
+		'chemtalkwiki' => 'http://chemtalk.org',
+		'granbluefantasywiki' => 'http://gbf.platinumdis.co',
+		'permanentfuturelabwiki' => 'http://permanentfuturelab.wiki',
+		'rationalwiki' => 'http://rationalwiki.ssu.lt',
+		'wikimirsmwiki' => 'http://wikimirsm.mateis.nl',
+	),
+	'wgShowHostnames' => array(
+		'default' => true, // Show which server the request was serviced by
+	),
+	'wgUsePathInfo' => array(
+		'default' => true,
+	),
+	// /Server
+
+	// Style
+	'wgDefaultSkin' => array(
+		'default' => 'vector',
+		'diavwiki' => 'cologneblue',
+		'spiralwiki' => 'foreground',
+		'wikidemoswiki' => 'foreground',
+	),
+	'wgFavicon' => array(
+		'default' => "//$wmgUploadHostname/common/default.ico",
+		'badpiggieswiki' => "//$wmgUploadHostname/badpiggies.orain.org/images/6/64/Favicon.ico",
+		'bgowiki' => "//$wmgUploadHostname/bgo.orain.org/images/6/64/Favicon.ico",
+		'checkwiki' => "//$wmgUploadHostname/check.orain.org/images/8/88/Check-logo.png",
+		'diavwiki' => "//$wmgUploadHostname/diav.orain.org/images/6/64/Favicon.ico",
+		'donjonwiki' => "//$wmgUploadHostname/donjon.orain.org/images/6/64/Favicon.ico",
+		'cwsplanetwiki' => "//$wmgUploadHostname/cwsplanet.orain.org/images/1/1a/Favicon-cwsp.png",
+		'izanagiwiki' => "//$wmgUploadHostname/izanagi.orain.org/images/6/64/Favicon.ico",
+		'lovelivesiftwwiki' => "//$wmgUploadHostname/lovelivesiftw.orain.org/images/6/64/Favicon.ico",
+		'newsletterwiki' => "//$wmgUploadHostname/newsletter.orain.org/images/f/fe/Newsletter_Logo.png",
+		'rachopediawiki' => "//$wmgUploadHostname/rachopedia.orain.org/images/6/64/Favicon.ico",
+		'xenimuswiki' => "//$wmgUploadHostname/xenimus.orain.org/images/2/2d/Directx.ico",
+	),
+	'wgLogo' => array(
+		'default' => "//$wmgUploadHostname/meta.orain.org/images/c/c6/Orain.png",
+		'allthetropeswiki' => "//$wmgUploadHostname/allthetropes.orain.org/images/8/86/Logo-Square-v1-1x.png",
+		'atomwiki' => "//$wmgUploadHostname/atom.orain.org/images/b/bc/Wiki.png",
+		'badpiggieswiki' => "//$wmgUploadHostname/badpiggies.orain.org/images/8/8a/Bad_Piggies_Wiki_Logo.png",
+		'bgowiki' => "//$wmgUploadHostname/bgo.orain.org/images/a/a7/BGO_Icon.png",
+		'botwiki' => "//$wmgUploadHostname/meta.orain.org/images/6/65/BotWiki_logo.png",
+		'brunelracingwiki' => 'http://oi59.tinypic.com/1235obo.jpg',
+		'caosbaywiki' => "//$wmgUploadHostname/caosbay.orain.org/images/5/54/Caos_Logo.png",
+		'checkwiki' => "//$wmgUploadHostname/check.orain.org/images/8/88/Check-logo.png",
+		'cilirowiki' => "//$wmgUploadHostname/ciliro.orain.org/images/1/13/Ciliro_Wiki_logo.png",
+		'computerclanwiki' => '//upload.wikimedia.org/wikipedia/commons/f/f7/CC_Wiki_Graphic_Mark_Small.png',
+		'cwsplanetwiki' => "//$wmgUploadHostname/cwsplanet.orain.org/images/c/c9/CWSPlanet_logo.png",
+		'dangsunsnwiki' => '//upload.wikimedia.org/wikipedia/commons/e/e8/Kd-logo.png',
+		'deguwiki' => "//$wmgUploadHostname/meta.orain.org/images/b/ba/Deguwikilogo.png",
+		'donjonwiki' => "//$wmgUploadHostname/donjon.orain.org/images/8/8c/Logo_du_wiki.png",
+		'eotwiki' => "//$wmgUploadHostname/eot.orain.org/images/1/1b/Eotlogowiki.jpg",
+		'electrumwiki' => "//$wmgUploadHostname/electrum.orain.org/images/0/00/Logo_text_135.png",
+		'farmingsimulatorwiki' => "//$wmgUploadHostname/farmingsimulator.orain.org/images/0/04/Farming-Simulator-Wiki.png",
+		'fightingcasualisationwiki' => "//$wmgUploadHostname/fightingcasualisation.orain.org/images/3/3d/Small_logo.png",
+		'gamewiki' => "//$wmgUploadHostname/game.orain.org/images/8/83/Gw_new_logo.png",
+		'goldcraftmcwiki' => "//$wmgUploadHostname/goldcraftmc.orain.org/images/c/c9/Logo.png",
+		'granbluefantasywiki' => "//$wmgUploadHostname/granbluefantasy.orain.org/images/c/ca/GBFW_Logo.png",
+		'hshsguidelineswiki' => "//$wmgUploadHostname/hshsguidelines.orain.org/images/e/ec/HSHS_Logo.jpeg",
+		'isvwiki' => "//$wmgUploadHostname/isv.orain.org/images/b/bc/Wiki.png",
+		'imapediawiki' => "//$wmgUploadHostname/imapedia.orain.org/images/2/2a/Imapedia_logo.png",
+		'internalwiki' => "//$wmgUploadHostname/internal.orain.org/images/b/bc/Wiki.png",
+		'ipbritanicowiki' => "//$wmgUploadHostname/ipbritanico.orain.org/images/b/bc/Wiki.png",
+		'ironperfectionwiki' => "//$wmgUploadHostname/ironperfection.orain.org/images/c/c9/Logo.png",
+		'izanagiwiki' => "//$wmgUploadHostname/izanagi.orain.org/images/e/eb/IZLogo.png",
+		'keionrailwiki' => '//upload.wikimedia.org/wikipedia/commons/e/e4/Subway_TokyoTozai.png',
+		'linuxwiki' => "//$wmgUploadHostname/linux.orain.org/images/e/ed/Wiki_logo_Linux.png",
+		'lovelivesiftwwiki' => "//$wmgUploadHostname/lovelivesiftw.orain.org/images/f/f1/Llwikilogo.png",
+		'mediawikitesterswiki' => '//upload.wikimedia.org/wikipedia/commons/9/9a/MediaWikiTestersWiki.png',
+		'mwmwiki' => "//$wmgUploadHostname/mwm.orain.org/images/a/a6/Wiki-Logo.png",
+		'namuhwiki' => "//$wmgUploadHostname/namuh.orain.org/images/5/59/Logowikinamuh.png",
+		'nationalewiki' => "//$wmgUploadHostname/nationale.orain.org/images/2/29/Logo_of_the_Encyclopedia_Nationale.png",
+		'netwiki' => "//$wmgUploadHostname/net.orain.org/images/5/58/Logo.jpeg",
+		'newsletterwiki' => "//$wmgUploadHostname/newsletter.orain.org/images/f/fe/Newsletter_Logo.png",
+		'notsoepfwiki' => "//$wmgUploadHostname/notsoepf.orain.org/images/c/c9/Logo.png",
+		'peachywiki' => '//upload.wikimedia.org/wikipedia/commons/5/51/PeachyFrameworkLogo.png',
+		'pigawiki' => "//$wmgUploadHostname/piga.orain.org/images/2/23/PigaLore.png",
+		'portalwiki' => "//$wmgUploadHostname/portal.orain.org/images/f/fa/Portalpedia_Logo.png",
+		'poserdazfreebieswiki' => "//$wmgUploadHostname/poserdazfreebies.orain.org/images/9/9a/Wikilogo.jpg",
+		'rachopediawiki' => "//$wmgUploadHostname/rachopedia.orain.org/images/b/bc/Wiki.png",
+		'reviwiki' => '//upload.wikimedia.org/wikipedia/commons/thumb/5/53/Server-multiple.svg/135px-Server-multiple.svg.png',
+		'riderpediawiki' => "//$wmgUploadHostname/riderpedia.orain.org/images/5/5d/Riderpedia_Logo.png",
+		'rightwiki' => "//$wmgUploadHostname/right.orain.org/images/4/46/Male-anatomy.png",
+		'robloxclanswiki' => "//$wmgUploadHostname/robloxclans.orain.org/images/3/33/Clan-Icon-700px.png",
+		'sapelliwiki' => "//$wmgUploadHostname/sapelli.orain.org/images/2/2c/Sapelli_logo_135.png",
+		'serietvwiki' => "//$wmgUploadHostname/serietv.orain.org/images/c/c9/Logo.png",
+		'szkwiki' => "//$wmgUploadHostname/szk.orain.org/images/c/c1/SzKLogo.png",
+		'spiralwiki' => '//upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Spiral_project_logo.svg/135px-Spiral_project_logo.svg.png',
+		'testwiki' => "//$wmgUploadHostname/test.orain.org/images/8/8d/Twlogo.png",
+		'ucdgsawiki' => "//$wmgUploadHostname/ucdgsa.orain.org/images/c/c9/Logo.png",	
+		'wh40kwiki' => "//$wmgUploadHostname/wh40k.orain.org/images/0/09/Encyclopedium.png",
+		'wikiconstituciowiki' => '//upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Flag_of_Catalonia.svg/135px-Flag_of_Catalonia.svg.png',
+		'wikimaenwiki' => "//$wmgUploadHostname/wikimaen.orain.org/images/4/4d/Wikimaen.png",
+		'wikimirsmwiki' => "//$wmgUploadHostname/wikimirsm.orain.org/images/d/d9/Wikimirsm-logo-final.gif",
+		'wikinambaswiki' => '//upload.wikimedia.org/wikipedia/commons/thumb/5/53/WikinambÃ¡.png/135px-WikinambÃ¡.png',
+		'wikitarbeswiki' => "//$wmgUploadHostname/meta.orain.org/images/7/73/Logowikitarbes.png",
+		'wizardwiki' => "//$wmgUploadHostname/wizard.orain.org/images/7/7e/Wizard_logo.png",
+		'womeninengineeringwiki' => 'http://i.imgur.com/smKxNkE.png',
+		'xenimuswiki' => "//$wmgUploadHostname/xenimus.orain.org/images/8/8c/Xenimuswikititle.png",
+	),
+	'wgStylePath' => array(
+		'default' => "//$wmgUploadHostname/common/skins",
+	),
+	'wgUseAjax' => array(
+		'default' => true,
+	),
+	// /Style
+	
+	// Time
+	'wgLocaltimezone' => array(
+		'default' => 'Europe/London',
+		'donjonwiki' => 'Europe/Paris',
+		'ironperfectionwiki' => 'America/Detroit',
+		'librewiki' => 'Asia/Seoul',
+		'lovelivesiftwwiki' => 'Asia/Taipei',
+		'nsswiki' => 'Asia/Seoul',
+		'quantixwiki' => 'America/Detroit',
+		'reviwiki' => 'Asia/Seoul',
+		'szkwiki' => 'Europe/Budapest',
+		'tomegkozlekedowiki' => 'Europe/Budapest',
+		'worldnewswiki' => 'Asia/Taipei',
+		'wikilistswiki' => 'Asia/Tokyo',
+		'wikimaenwiki' => 'UTC',
+	),
+	// /Time
+	// Disable $wgTorLoadNodes
+	'wgTorLoadNodes' => array(
+		'default' => false,
+	),
+	// Translate
+	'wgEnablePageTranslation' => array(
+		'default' => true,
+	),
+	'wgTranslateDocumentationLanguageCode' => array(
+		'default' => false,
+	),
+	'wgTranslateFuzzyBotName' => array(
+		'default' => 'FuzzyBot',
+	),
+	'wmgUseTranslate' => array(
+		'default' => false,
+		'cilirowiki' => true,
+		'extloadwiki' => true, // all extensions are loaded on this wiki
+		'mediawikitesterswiki' => true,
+		'metawiki' => true,
+		'spiralwiki' => true,
+	),
+	// /Translate
+
+	// UrlShortener
+	'wgUrlShortenerTemplate' => array(
+		'default' => '/o/$1',
+	),
+	'wgUrlShortenerDBName' => array(
+		'default' => 'metawiki',
+	),
+	'wgUrlShortenerDomainsWhitelist' => array(
+		'default' => array(
+			'(.*\.)?orain\.org',
+			'chemtalk\.org',
+			'encyclopediamuricana\.us',
+			'gbf\.platinumdis\.co',
+			'spiral\.wiki',
+			'wikiconstitucio\.org',
+			'wiki\.revi\.pe\.kr',
+			'nazis\.exposed',
+			'wikiconstitucio\.org',
+			'wikimirsm\.mateis\.nl',
+		),
+	),
+	// /UrlShortener
+
+	// Users
+	'wgAllowUserJs' => array(
+		'default' => true,
+	),
+	'wgAllowUserCss' => array(
+		'default' => true,
+	),
+	// /Users
+);
+
+// From https://www.mediawiki.org/wiki/Manual:$wgConf#for_1.14_and_newer
+function efGetSiteParams( $conf, $wiki ) {
+	global $wikiTags;
+	$site = null;
+	$lang = null;
+	foreach ( $conf->suffixes as $suffix ) {
+		if ( substr( $wiki, -strlen( $suffix ) ) == $suffix ) {
+			$site = $suffix;
+			$lang = substr( $wiki, 0, -strlen( $suffix ) );
+			break;
+		}
+	}
+	return array(
+		'suffix' => $site,
+		'lang' => $lang,
+		'params' => array(
+			'lang' => $lang,
+			'site' => $site,
+			'wiki' => $wiki,
+		),
+		'tags' => isset( $wikiTags ) ? $wikiTags : array(),
+	);
+}
+
+// Defaults
+$wgGroupPermissions['bureaucrat']['renameuser'] = false;
+$wgGroupPermissions['bureaucrat']['userrights'] = false;
+$wgGroupPermissions['sysop']['importupload'] = false;
+$wgGroupPermissions['sysop']['bigdelete'] = false;
+$wgGroupPermissions['user']['upload'] = false;
+unset( $wgGroupPermissions['steward'] );
+
+foreach ( $wgConf->settings['wgServer'] as $db => $server ) {
+	if ( substr( $server, 0, 2 ) == '//' ) {
+		$canonical =& $wgConf->settings['wgCanonicalServer'][$db];
+		$canonical = $canonical ? : ( 'https:' . $server );
+	}
+}
+
+$wmgDocumentURI = isset( $_SERVER['DOCUMENT_URI'] ) ? $_SERVER['DOCUMENT_URI'] : null;
+$wmgHTTPhost = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : null;
+
+if ( ( basename( $_SERVER["SCRIPT_FILENAME"] ) == "thumb.php" ) && isset( $_REQUEST['sitex'] ) ) {
+	$wmgHostname = $_REQUEST['sitex'];
+} elseif ( preg_match( '/^\/(.*?)\/load.php$/', $wmgDocumentURI, $matches ) ) {
+	$wmgHostname = $matches[1];
+} elseif ( preg_match( '/^www\.(.*?\..*?)$/', $wmgHTTPhost, $matches ) ) {
+	$wmgHostname = $matches[1];
+} else {
+	$wmgHostname = $wmgHTTPhost;
+}
+
+$wgConf->siteParamsCallback = 'efGetSiteParams';
+
+if ( defined( "MW_DB" ) ) {
+	$wgDBname = MW_DB;
+	$subdomain = substr( $wgDBname, 0, -4 );
+	$server = & $wgConf->settings['wgServer'][$wgDBname];
+	$wmgHostname = isset( $server ) ? $server : "$subdomain.orain.org";
+// TODO: Fix this routing hack
+} elseif ( $search = array_search( '//' . $wmgHostname, $wgConf->settings['wgServer'] ) ) {
+	$wgDBname = $search;
+} elseif ( $search = array_search( 'http://' . $wmgHostname, $wgConf->settings['wgServer'] ) ) {
+	$wgDBname = $search;
+} elseif ( $search = array_search( 'https://' . $wmgHostname, $wgConf->settings['wgServer'] ) ) {
+	$wgDBname = $search;
+} elseif ( preg_match( '/^(.+?)\.(.+?)\.orain\.org$/', $wmgHostname, $matches ) ) {
+	$wgDBname = $matches[1] . $matches[2];
+} elseif ( preg_match( '/^(.*)\.orain\.org$/', $wmgHostname, $matches ) ) {
+	$wgDBname = $matches[1] . 'wiki';
+} elseif ( strpos( $wmgHTTPhost, 'meta.orain.org' ) ) {
+	# In case the DB list fails we ALWAYS want metawiki to be accessible so hardcode this!
+	$wgDBname = 'metawiki';
+} else {
+	$wgDBname = false;
+}
+
+/**
+ * Fill the database list
+ */
+$DBlist = array_map( 'trim', file( "$IP/all.dblist" ) );
+$wgLocalDatabases = array();
+
+foreach ( $DBlist as $wiki ) {
+	$wiki = explode( '|', $wiki, 4 );
+	list( $DBname, $siteName, $siteLang, $wikiTagList ) = array_pad( $wiki, 4, '' );
+	$wgLocalDatabases[] = $DBname;
+	$wgConf->settings['wgSitename'][$DBname] = $siteName;
+	$wgConf->settings['wgLanguageCode'][$DBname] = $siteLang;
+	if ( $DBname == $wgDBname ) {
+		$wikiTags = array_filter( explode( '|', $wikiTagList ) );
+	}
+}
+
+// Addshore - 3 Apr 2015 - If we didn't get any dbs for some reason FORCE metawikis existance
+if( empty( $wgLocalDatabases ) ) {
+	list( $DBname, $siteName, $siteLang, $wikiTagList ) = array( 'metawiki', 'Orain Meta', 'en', 'upload' );
+	$wgLocalDatabases[] = $DBname;
+	$wgConf->settings['wgSitename'][$DBname] = $siteName;
+	$wgConf->settings['wgLanguageCode'][$DBname] = $siteLang;
+	if ( $DBname == $wgDBname ) {
+		$wikiTags = array_filter( explode( '|', $wikiTagList ) );
+	}
+}
+
+$wgConf->wikis = & $wgLocalDatabases;
+
+/**
+ * Generally setup the given wiki
+ */
+
+$wgConf->extractAllGlobals( $wgDBname );
+
+$wgGroupPermissions['confirmed'] = & $wgGroupPermissions['autoconfirmed'];
+
+// Group overrides
+foreach ( $defaultGroupOverrides as $group => $permissions ) {
+	if ( !array_key_exists( $group, $wgGroupPermissions ) ) {
+		$wgGroupPermissions[$group] = array();
+	}
+	$wgGroupPermissions[$group] = $permissions + $wgGroupPermissions[$group];
+}
+
+foreach ( $specificGroupOverrides as $group => $permissions ) {
+	if ( !array_key_exists( $group, $wgGroupPermissions ) ) {
+		$wgGroupPermissions[$group] = array();
+	}
+	$wgGroupPermissions[$group] = $permissions + $wgGroupPermissions[$group];
+}
+
+if ( $wgDBname !== 'metawiki' ) {
+	$wgForeignFileRepos[] = array(
+		'class' => 'ForeignDBRepo',
+		'name' => 'metawiki-foreign',
+		'url' => "//$wmgUploadHostname/meta.orain.org/images",
+		'hashLevels' => 2,
+		'transformVia404' => true,
+		'initialCapital' => true,
+		'descBaseUrl' => '//meta.orain.org/wiki/File:',
+		'scriptDirUrl' => '//meta.orain.org/w',
+		'fetchDescription' => false,
+		'dbType' => $wgDBtype,
+		'dbServer' => $wgDBserver,
+		'dbUser' => $wgDBuser,
+		'dbPassword' => $wgDBpassword,
+		'dbName' => 'metawiki',
+		'dbFlags' => DBO_DEFAULT,
+		'tablePrefix' => '',
+		'hasSharedCache' => true,
+		'directory' => "/mnt/mediawiki/uploads/meta.orain.org/images",
+	);
+}
+
+// $wgUseInstantCommons uses http or https by WebRequest::detectProtocol(), but it is
+// getting misleaded by load balancing so it thinks the protocol is http (but it should always be https, hardcoded or not). --Southparkfan
+if ( $wmgUseInstantCommons ) {
+	$wgForeignFileRepos[] = array(
+		'class' => 'ForeignAPIRepo',
+		'name' => 'wikimediacommons',
+		'apibase' => 'https://commons.wikimedia.org/w/api.php',
+		'hashLevels' => 2,
+		'fetchDescription' => true,
+		'descriptionCacheExpiry' => 43200,
+		'apiThumbCacheExpiry' => 86400,
+	);
+}
+
+/**
+ * Define access rights for specific wiki groups
+ */
+if ( $wmgClosedWiki ) {
+	//Assign its own CentralNotice 'project' as long as its not already orain
+	if ( $wgNoticeProject !== 'orain' ) {
+		$wgNoticeProject = 'closed';
+	}
+}
+
+if ( $wmgPrivateWiki ) {
+	// Make it easier to privatise wikis and expand on the options variably
+	//Assign its own CentralNotice 'project' as long as its not already orain
+	if ( $wgNoticeProject !== 'orain' ) {
+		$wgNoticeProject = 'private';
+	}
+	// Whitelist! Default carried over for tracking.
+	$wgWhitelistRead =
+		array(
+			"Main Page",
+			"Special:UserLogin",
+			"Special:UserLogout",
+			"Special:ResetPassword",
+			"MediaWiki:Common.css",
+			"Special:CentralLogin",
+			"Special:ConfirmEmail"
+		);
+}
+
+if ( $wmgDisableAnonEditing ) {
+	$wgGroupPermissions['*']['edit'] = false;
+	$wgGroupPermissions['*']['createpage'] = false;
+}
+
+if ( $wmgArchivedWiki ) {
+	$wgReadOnly = "Archived wiki";
+}
+
+if ( isset( $wgCentralAuthAutoLoginWikis[$wmgHostname] ) ) {
+	// Don't log into self
+	unset( $wgCentralAuthAutoLoginWikis[$wmgHostname] );
+	$wgCentralAuthCookieDomain = $wmgHostname;
+}
+
+$wgScribuntoEngineConf['luastandalone']['luaPath'] = "$IP/extensions/Scribunto/engines/LuaStandalone/binaries/lua5_1_5_linux_64_generic/lua";
+
+$wgCacheDirectory = '/tmp/mw-cache';
+$wgFileCacheDirectory = "/mnt/mediawiki/filecache/$wmgHostname";
+$wgLoadScript = "//$wmgUploadHostname/$wmgHostname/load.php";
+$wgUploadDirectory = "/mnt/mediawiki/uploads/$wmgHostname/images";
+$wgUploadPath = "//$wmgUploadHostname/$wmgHostname/images";
+
+// API
+$wgAPIModules['createaccount'] = 'ApiDisabled';
+
+// Private IPs
+$wgUsePrivateIPs = true;
+
+// CreateWiki configuration
+$wgCreateWikiPublicDbListPageId = 451;
+$wgCreateWikiPrivateDbListPageId = 2453;
+$wgCreateWikiBaseDomain = 'orain.org';
+$wgCreateWikiUseCloudFlare = true;
+$wgCloudFlareUser = 'accounts' . '@' . 'orain.org';
+$wgCloudFlareKey = '{{cloudflare_api_key}}';
+
+# Load the 'localextensions' here
+require_once( "$IP/LocalExtensions.php" );
+
+// QuestyCaptcha
+// Note: we force a load here to avoid errors and ensure it is loaded everywhere -- Addshore (8-feb-15)
+require_once( "$IP/extensions/ConfirmEdit/ConfirmEdit.php" );
+require_once( "$IP/extensions/ConfirmEdit/QuestyCaptcha.php" );
+// Note: This must be after the loading of the QuestyCaptcha Extension -- Addshore (8-Feb-15)
+call_user_func( function() {
+	global $wgCaptchaQuestions;
+	$myChallengeString = substr(md5(uniqid(mt_rand(), true)), 0, 8);
+	$myChallengeIndex = rand(0, 7) + 1;
+	$myChallengePositions = array ('first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth');
+	$myChallengePositionName = $myChallengePositions[$myChallengeIndex - 1];
+	$wgCaptchaQuestions[] = array (
+		'question' => "Please provide the $myChallengePositionName character from the sequence <code>$myChallengeString</code>:",
+		'answer' => $myChallengeString[$myChallengeIndex - 1]
+	);
+} );
+require_once( "$IP/extensions/ConfirmEdit/ReCaptcha.php" );
+$wgReCaptchaPublicKey = '6LcC5AATAAAAAFW3aPQLu-jiRdVct5P9rqiTUMEd';
+$wgReCaptchaPrivateKey = '{{recaptcha_private_key}}';
+
+if ( $wgCommandLineMode ) {
+# TODO: use OrainHooks:ifUserCanDebug instead of this hack
+	//error_reporting( -1 ); // phpredis introduces a *lot* of array issues due to live hack within MediaWiki
+	error_reporting( E_ALL & ~E_NOTICE & ~E_STRICT ); //Here, try this.  Should limit the displayed errors to only the important ones.
+	ini_set( 'display_errors', 1 );
+	$wgShowExceptionDetails = true;
+	$wgDebugToolbar = true;
+	$wgDevelopmentWarnings = true;
+	$wgShowSQLErrors = true;
+	$wgShowDBErrorBacktrace = true;
+}
+
+# Load the split up files...
+require_once( "$IP/LocalLogging.php" );
+require_once( "$IP/Redis.php" );
+require_once( "$IP/Database.php" ); // Multi-master set up --John
+require_once( "$IP/OrainHooks.php" );
+require_once( "$IP/Missing.php" );
+
+# Lock the database temp.
+# $wgReadOnly = "Orain is currently in read-only mode. This should be completed by 1/2/2015 00:00 UTC.";

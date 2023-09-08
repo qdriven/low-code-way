@@ -1,0 +1,10 @@
+name: Lint
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: sudo apt-get install shellcheck
+    # https://github.com/koalaman/shellcheck/wiki/SC1071
+    - run: find . -type f -name '*.sh' -exec shellcheck -e SC1071 {} \;

@@ -1,0 +1,37 @@
+- name: Copy default ufw default settings
+  copy: src="./ufw/default" dest=/etc/default/ufw
+
+- name: Copy ufw files
+  copy: src=./ufw/{{item}} dest=/etc/ufw/{{item|basename}} owner=root group=root mode=700
+  with_items:
+    - after.rules
+    - before.rules
+
+- name: Allow access on all internal production IPs
+  ufw: rule=allow src={{ item }}
+  with_items:
+  # prod5 intv4
+  - 10.131.158.213
+  # prod6 intv4
+  - 10.131.158.212
+  # prod7 intv4
+  - 10.131.158.211
+  # prod8 intv4
+  - 10.131.158.214
+  # prod9 intv4
+  - 10.131.158.215
+  # prod10 intv4
+  - 10.131.243.243
+  # prod11 intv4
+  - 10.131.158.210
+  # prod12 intv4
+  - 10.131.158.209
+
+- name: Allow ssh access
+  ufw: rule=allow port=22
+
+- name: Allow DNS port
+  ufw: rule=allow port=53
+
+- name: Enable ufw
+  ufw: state=enabled policy=deny

@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  zentao:
+    container_name: "zentao"
+    image: "easysoft/zentao:latest"
+    restart: always
+    volumes:
+      - "~/opt/data/zentao:/www/zentaopms"
+      - "~/opt/data/mysql:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      # MYSQL_ROOT_HOST: "%"
+    ports:
+      - "8001:80"
+      # - "3306:3306"s

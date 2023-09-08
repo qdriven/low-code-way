@@ -1,3 +1,0 @@
-# config file to be sourced on startup - will over-ride any env set in the docker-compose.yml
-
-TEST=none

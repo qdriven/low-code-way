@@ -1,0 +1,16 @@
+# vi: ft=apache
+
+{%- if documentroot is defined %}
+DocumentRoot {{ documentroot }}
+{%- endif %}
+
+<Location "/">
+    ProxyPass {{ proxypass }}
+
+{%- if authname is defined %}
+    AuthName "{{ authname }}"
+    AuthType Basic
+    AuthUserFile /etc/apache2/.htpasswd-{{ name }}
+    Require valid-user
+{%- endif %}
+</Location>

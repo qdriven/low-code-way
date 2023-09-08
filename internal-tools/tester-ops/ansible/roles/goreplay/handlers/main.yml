@@ -1,0 +1,11 @@
+- hosts: goreplay-servers
+  vars:
+    goreplay_home: /root
+
+  tasks:
+    - name: copy goreplay 
+      unarchive:
+        src: ../files/goreplay
+        dest: "{{goreplay_home}}"
+      tags:
+        - install_goreplay

@@ -1,0 +1,8 @@
+- name: Add MariaDB apt key
+  apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0xcbcb082a1bb943db
+
+- name: Add MariaDB apt repository
+  apt_repository: repo='deb http://ftp.osuosl.org/pub/mariadb/repo/5.5/ubuntu trusty main'
+
+- name: Install MariaDB
+  apt: pkg=mariadb-server=5.5.45+maria-1~trusty force=yes

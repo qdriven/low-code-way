@@ -1,6 +1,0 @@
-# This allows `-c salt-config` to be omitted from salt-ssh commands run from this directory.
-salt-ssh:
-  config_dir: salt-config
-  # See https://github.com/saltstack/salt/issues/21370
-  extra_filerefs:
-    - salt://apache/includes/cove.include.jinja

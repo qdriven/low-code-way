@@ -1,0 +1,38 @@
+daemonize yes
+pidfile /var/run/redis/redis-server.pid
+
+port 6379
+
+timeout 0
+
+# production type logging
+loglevel notice
+logfile /var/log/redis/redis-server.log
+
+databases 16
+
+dir /var/lib/redis
+
+slave-serve-stale-data yes
+
+# Password to use redis - a layer of security we need
+requirepass {{redis_password}}
+
+# Keep this here in case we have to use it on the fly -John
+# maxmemory 300000000 # 300MB
+
+# If the above is set - set this as well -John
+# maxmemory-policy volatile-lru
+
+appendonly no
+appendfsync everysec
+no-appendfsync-on-rewrite no
+auto-aof-rewrite-percentage 100
+auto-aof-rewrite-min-size 64mb
+
+slowlog-log-slower-than 10000
+slowlog-max-len 128
+
+## include specific config
+
+include /etc/redis/evict.conf

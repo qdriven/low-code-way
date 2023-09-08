@@ -1,0 +1,11 @@
+- name: Create a cronjob for auto running of ansible
+  cron: name="Automatic Run"
+        user="root"
+        minute=0
+        job="/root/ans-all  > /var/log/ans-all.log 2>&1"
+
+- name: Create a cronjob for auto running of ansible (skiping slow stuff)
+  cron: name="Automatic Run (skiping slow stuff)"
+        user="root"
+        minute=10,20,30,40,50
+        job="/root/ans-all --skip-tags="slow"  > /var/log/ans-all.log 2>&1"

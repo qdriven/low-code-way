@@ -1,0 +1,14 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/": "pages/index.js",
+  "/awesome/awesome-nocode": "pages/awesome/awesome-nocode.js",
+  "/awesome/go-lowcode": "pages/awesome/go-lowcode.js",
+  "/awesome/java-lowocde": "pages/awesome/java-lowocde.js",
+  "/chatgpt-tutorials/shaply": "pages/chatgpt-tutorials/shaply.js",
+  "/awesome/low-code-tasks": "pages/awesome/low-code-tasks.js",
+  "/awesome/ops-low-code": "pages/awesome/ops-low-code.js",
+  "/awesome/python-low-code": "pages/awesome/python-low-code.js",
+  "/low-code/overview": "pages/low-code/overview.js"
+}

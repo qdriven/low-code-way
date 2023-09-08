@@ -1,0 +1,8 @@
+- name: Copy my.cnf
+  copy: src=my.cnf dest=/etc/mysql/my.cnf
+
+- name: Delete the old my.cnf
+  command: rm /etc/my.cfg removes=/etc/my.cfg
+
+- name: Copy debian.cnf
+  template: src=debian.cnf.j2 dest=/etc/mysql/debian.cnf

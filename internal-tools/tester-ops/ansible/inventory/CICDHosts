@@ -1,0 +1,13 @@
+[cicd-servers]
+perf-s01 ansible_host=172.168.3.93 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s02 ansible_host=172.168.3.94 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s03 ansible_host=172.168.3.95 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s04 ansible_host=172.168.3.96 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s05 ansible_host=172.168.3.97 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+
+[docker-servers]
+perf-s01 ansible_host=172.168.3.93 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s02 ansible_host=172.168.3.94 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s03 ansible_host=172.168.3.95 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s04 ansible_host=172.168.3.96 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes
+perf-s05 ansible_host=172.168.3.97 ansible_ssh_user=ubuntu ansible_ssh_pass=ORK7oBtr leader=yes

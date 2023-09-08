@@ -1,0 +1,24 @@
+#!/bin/sh
+#Runs update.php for the given wiki or all wikis
+
+if [ $# -eq 0 ]; then
+   #No arguments provided
+   echo No args given, Running update.php on ALL wikis in....
+   echo 5...
+   sleep 1
+   echo 4...
+   sleep 1
+   echo 3...
+   sleep 1
+   echo 2...
+   sleep 1
+   echo 1...
+   sleep 1
+   echo Running
+   sudo -u mediawiki /home/mediawiki/db_loop.sh /srv/mediawiki/w/maintenance/update.php --quick
+   echo Update.php has run for ALL wikis
+else
+   echo Running update.php for $1
+   sudo -u mediawiki /usr/bin/php5 /srv/mediawiki/w/maintenance/update.php --quick --wiki $1
+   echo Update.php has run for $1
+fi

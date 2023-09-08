@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+  jenkins:
+    image: jenkinsci/blueocean:latest
+    container_name: tops_jenkins_blueocean
+    user: root
+    restart: always
+    ports:
+      - "9090:8080"
+      - "50000:5000"
+    volumes:
+      - "/data/jenkins:/var/jenkins_home"
+      - "/data/run/docker-jenkins.sock:/var/run/docker.sock"

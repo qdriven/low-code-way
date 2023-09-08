@@ -1,0 +1,55 @@
+- name: Create directory for the protocol-agnostic parts of the nginx enabled sites configuration
+  file: path=/etc/nginx/sites-enabled-agnostic state=directory owner=mediawiki group=mediawiki mode=0775
+
+- name: Copy the protocol-agnostic parts of the nginx enabled sites configuration
+  copy: src={{item}} dest=/etc/nginx/sites-enabled-agnostic
+  with_fileglob:
+    - ./sites-enabled-agnostic/*
+  notify: Reload nginx
+  
+- name: Create /etc/nginx/sites-enabled
+  action: file path=/etc/nginx/sites-enabled state=directory owner=root group=root mode=0755
+
+- name: Copy nginx enabled sites configuration
+  template: src="./sites-enabled/all.j2" dest=/etc/nginx/sites-enabled/all
+  notify: Reload nginx
+
+- name: Copy nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify: Reload nginx
+
+- name: Delete /etc/nginx/conf.d/default.conf
+  file: path=/etc/nginx/conf.d/default.conf
+        state=absent
+  notify: Reload nginx
+
+- name: Create directoy for favicons
+  action: file path=/usr/share/nginx/favicons state=directory owner=mediawiki group=mediawiki mode=0755
+
+- name: Copy favicons
+  copy: src={{item}} dest=/usr/share/nginx/favicons owner=mediawiki group=mediawiki mode=0755
+  with_fileglob:
+    - ./favicons/*.ico
+
+- name: Create directoy for error pages
+  action: file path=/usr/share/nginx/errorpages state=directory owner=mediawiki group=mediawiki mode=0755
+
+- name: Copy error pages
+  copy: src={{item}} dest=/usr/share/nginx/errorpages owner=mediawiki group=mediawiki mode=0755
+  with_fileglob:
+    - ./errorpages/*.*
+
+- name: Create /usr/share/nginx/default
+  file: path=/usr/share/nginx/default state=directory owner=mediawiki group=mediawiki mode=0755
+  
+- name: Copy default robots.txt
+  copy: src=robots.txt dest=/srv/mediawiki/w/robots.txt owner=mediawiki group=mediawiki mode=0755
+
+- name: Copy default index.html
+  copy: src=default.index.html dest=/usr/share/nginx/default/index.html owner=mediawiki group=mediawiki mode=0755
+
+- name: Copy issuer.crt to nginx
+  copy: src=issuer.crt dest=/etc/nginx/
+
+- name: Copy logrotate.d
+  copy: src="./logrotate.d/nginx" dest=/etc/logrotate.d/nginx

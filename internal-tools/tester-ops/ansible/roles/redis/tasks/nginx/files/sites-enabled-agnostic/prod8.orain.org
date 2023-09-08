@@ -1,0 +1,22 @@
+server_name prod8.orain.org prod8;
+
+root /usr/share/nginx/default;
+index index.html index.htm;
+
+location ~ {
+	fastcgi_pass	127.0.0.1:9001;
+	include		fastcgi_params;
+}
+
+error_page 404 /404.html; location = /404.html {
+	ssi on;
+	root /usr/share/nginx/errorpages;
+}
+error_page 500 /500.html; location = /500.html {
+	ssi on;
+	root /usr/share/nginx/errorpages;
+}
+error_page 502 /502.html; location = /502.html {
+	ssi on;
+	root /usr/share/nginx/errorpages;
+}

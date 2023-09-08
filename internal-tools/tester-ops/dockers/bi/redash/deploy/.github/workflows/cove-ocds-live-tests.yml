@@ -1,0 +1,47 @@
+name: OCDS Data Review Tool live tests
+on:
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+    - uses: actions/cache@v1
+      with:
+        path: venv
+        key: ${{ runner.os }}-venv-${{ hashFiles('**/requirements_dev.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-venv-
+    - name: Install
+      run: |
+        python -m venv venv
+        . venv/bin/activate
+        git clone 'https://github.com/open-contracting/cove-ocds.git'
+        cd cove-ocds
+        pip install -r requirements_dev.txt
+        # Google Chrome and ChromeDriver are already included.
+        # https://help.github.com/en/actions/reference/software-installed-on-github-hosted-runners
+    - name: Test
+      run: |
+        . venv/bin/activate
+        cd cove-ocds
+        CUSTOM_SERVER_URL=http://standard.open-contracting.org/ DJANGO_SETTINGS_MODULE=cove_project.settings py.test cove_ocds/tests_functional.py
+    - name: Send mail
+      if: failure()
+      uses: dawidd6/action-send-mail@v2
+      with:
+        server_address: ${{secrets.MAIL_HOST}}
+        server_port: ${{secrets.MAIL_PORT}}
+        username: ${{secrets.MAIL_USERNAME}}
+        password: ${{secrets.MAIL_PASSWORD}}
+        subject: "Github Actions: ${{github.repository}} ${{github.workflow}} failed!"
+        body: "Github Actions: ${{github.repository}} ${{github.workflow}} failed!
+
+
+          ${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}}"
+        to: inbox+opendataservices+443f+servers@plan.io, sysadmin@open-contracting.org
+        from: Github action <noreply@noreply.open-contracting.org>

@@ -1,1 +1,0 @@
-npx cubejs-cli create pqm -d postgres

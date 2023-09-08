@@ -1,0 +1,48 @@
+---
+# tasks 
+
+  - name: configure jenkins repository
+    get_url:
+      url: '{{ jenkins_repo_url }}'
+      dest: /etc/yum.repos.d/
+      mode: 0644
+
+  - name: Import a key from a url
+    rpm_key:
+      state: present
+      key: '{{ jenkins_import_key }}'
+
+  - name: Install java, git, jenkins
+    yum:
+      name: ['java-1.8.0-openjdk', 'git', 'jenkins']
+      state: present
+
+  - name: Ensure Jenkins is started and runs on startup.
+    service:
+      name: jenkins
+      state: started
+      enabled: yes
+
+  - name: download maven
+    unarchive:
+      src: '{{ maven_download_url }}'
+      dest: /opt/
+      remote_src: yes
+
+  - name: create Maven installation directory
+    file:
+      state: directory
+      owner: root
+      group: root
+      mode: 'u=rwx,go=rx'
+      dest: '{{ maven_install_dir }}'
+
+  - name: install Maven
+    unarchive:
+      src: '{{ maven_download_dir }}/{{ maven_filename }}'
+      dest: '{{ maven_install_dir }}'
+      copy: no
+      owner: root
+      group: root
+      mode: 'go-w'
+      creates: '{{ maven_install_dir }}/apache-maven-{{ maven_version }}'

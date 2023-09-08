@@ -1,0 +1,49 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "simple": {
+            "format": "%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s"
+        }
+    },
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "WARN",
+            "formatter": "simple",
+            "stream": "ext://sys.stdout"
+        },
+
+        "syslog": {
+            "class": "logging.handlers.SysLogHandler",
+            "level": "DEBUG",
+            "address": "/dev/log",
+            "facility": "local7",
+            "formatter": "simple"
+        }
+    },
+
+    "loggers": {
+        "ocdskingfisher": {
+            "level": "DEBUG",
+            "handlers": ["console","syslog"],
+            "propagate": false
+        },
+        "sqlalchemy": {
+            "level": "WARN",
+            "handlers": ["console","syslog"],
+            "propagate": false
+        },
+        "alembic": {
+            "level": "INFO",
+            "handlers": ["console","syslog"],
+            "propagate": false
+        }
+    },
+
+    "root": {
+        "level": "WARN",
+        "handlers": ["console", "syslog"]
+    }
+}

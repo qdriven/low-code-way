@@ -1,0 +1,18 @@
+- name: Create user "nagios"
+  user: name=nagios shell=/bin/zsh
+
+- name: Install nrpe plugin
+  apt: pkg=nagios-nrpe-plugin
+
+- name: Copy nagios plugins over
+  copy: src={{item}} dest=/usr/lib/nagios/plugins/ mode=0555
+  with_fileglob:
+  -  ./plugins/*
+
+- name: Copy nrpe_local.cfg to remote servers
+  copy: src=nrpe_local.cfg dest=/etc/nagios
+  notify: Restart nrpe
+
+- name: Copy nrpe.cfg to remote servers
+  copy: src=nrpe.cfg dest=/etc/nagios
+  notify: Restart nrpe

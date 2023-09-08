@@ -1,0 +1,20 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/patrick/workspace/personal/qdriven/roads/low-code-way/products/nocobase/qworkspace/storage/logs/.4430cfbe170d35227054abcaef3c7276f5ec407d-audit.json",
+    "files": [
+        {
+            "date": 1688619125370,
+            "name": "/Users/patrick/workspace/personal/qdriven/roads/low-code-way/products/nocobase/qworkspace/storage/logs/nocobase-2023-07-06-12.log",
+            "hash": "81a77c0f4b6224c15ae9cb50e607eb17011017189d712ff945599591605d07c7"
+        },
+        {
+            "date": 1688619691372,
+            "name": "/Users/patrick/workspace/personal/qdriven/roads/low-code-way/products/nocobase/qworkspace/storage/logs/nocobase-2023-07-06-13.log",
+            "hash": "76a7e4e18c8ab6ca7644e52a579d7948a51e1f46761599ea92b72d1ca988cf39"
+        }
+    ],
+    "hashType": "sha256"
+}

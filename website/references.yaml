@@ -1,6 +1,0 @@
-alternative:
-  - notion:
-      -  https://github.com/AppFlowy-IO/AppFlowy.git
-
-backend:
-  - https://github.com/amplication/amplication.git

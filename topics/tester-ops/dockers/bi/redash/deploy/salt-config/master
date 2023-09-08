@@ -1,7 +1,0 @@
-file_roots:
-  base:
-    - salt/
-
-pillar_roots:
-  base:
-    - pillar/

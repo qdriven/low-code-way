@@ -1,0 +1,6 @@
+click
+ocdsindex
+requests
+salt-ssh
+pip-tools
+pytest

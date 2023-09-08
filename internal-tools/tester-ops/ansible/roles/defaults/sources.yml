@@ -1,0 +1,11 @@
+- name: Add nginx apt key
+  apt_key: id=7BD9BF62 url=http://nginx.org/keys/nginx_signing.key
+
+- name: Add nginx apt repository
+  apt_repository: repo='deb http://nginx.org/packages/ubuntu/ trusty nginx'
+
+- name: Add Wikimedia Trusty apt key
+  apt_key: id=3F6CD44A url=https://raw.githubusercontent.com/wikimedia/translatewiki/master/puppet/modules/hhvm/files/wikimedia.key
+
+- name: Add Wikimedia Trusty repo
+  apt_repository: repo='deb http://apt.wikimedia.org/wikimedia trusty-wikimedia main universe' state=present

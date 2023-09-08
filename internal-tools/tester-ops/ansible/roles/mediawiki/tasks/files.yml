@@ -1,0 +1,62 @@
+- name: Create mediawiki log directories
+  file: path={{item}} state=directory owner=mediawiki
+  with_items:
+    - /var/log/mediawiki/
+    - /var/log/mediawiki/debuglogs/
+
+- name: Copy {{item}}
+  copy: src={{item}} dest=/home/mediawiki owner=mediawiki group=mediawiki mode=770
+  with_items:
+    - get_db_list.py
+    - get_privatedb_list.py
+    - db_loop.sh
+
+- name: Stat dblist
+  stat: path=/srv/mediawiki/w/all.dblist
+  register: dblist_file
+
+- name: Backup last dblist
+  copy: src=/srv/mediawiki/w/all.dblist dest=/srv/mediawiki/w/all.dblist.backup owner=mediawiki group=mediawiki mode=770 backup=yes
+
+  when: dblist_file.stat.exists
+  ignore_errors: True
+
+- name: Get new version of dblist
+  command: python3 ~/get_db_list.py
+  args:
+    creates: /srv/mediawiki/w/all.dblist
+  sudo: yes
+  sudo_user: mediawiki
+
+- name: chown all.dblist
+  command: chown mediawiki /srv/mediawiki/w/all.dblist
+  changed_when: False
+
+- name: Copy MediaWiki settings from templates
+  template: src={{item}} dest=/srv/mediawiki/w/{{item|basename|replace('.j2','')}}
+  with_fileglob:
+    - ./localsettings/*.php.j2
+  sudo: yes
+  sudo_user: mediawiki
+  notify:
+    - Rebuild localisation cache
+
+- name: Copy MediaWiki settings from files
+  copy: src={{item}} dest=/srv/mediawiki/w/{{item|basename}}
+  with_fileglob:
+    - ./localsettings/*.php
+  sudo: yes
+  sudo_user: mediawiki
+  notify:
+    - Rebuild localisation cache
+
+- name: Copy logrotate configuration
+  copy: src="./logrotate.d/mediawiki" dest=/etc/logrotate.d
+
+- name: Copy quickscripts
+  template: src={{item}} dest=/root/{{item|basename}} owner=root group=root mode=770
+  with_fileglob:
+    - ./quickscripts/*
+
+- name: Copy localisationcache rebuilt script to init.d
+  copy: src="./quickscripts/mw-rebuildlocalisationcache" dest=/etc/init.d/i18n.sh owner=root group=root mode=770

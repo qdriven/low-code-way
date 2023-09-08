@@ -1,0 +1,49 @@
+- name: Create a cronjob for get_db_list.py
+  cron: name="Get DB list" user="mediawiki" job="python3 ~/get_db_list.py"
+
+- name: Create a cronjob for getting private databases
+  cron: name="Get private DB list" user="mediawiki" job="python3 ~/get_privatedb_list.py"
+
+- name: Create a cronjob for the MediaWiki job queue
+  cron: name="MediaWiki job queue"
+        user="mediawiki"
+        minute=0
+        job="/home/mediawiki/db_loop.sh /srv/mediawiki/w/maintenance/runJobs.php"
+  when: "'{{ansible_hostname}}' == 'prod11'"
+
+- name: Create a cronjob for MediaWiki special page updating on All The Tropes
+  cron: name="MediaWiki special page updating"
+        user="mediawiki"
+        minute="0"
+        hour="*/3"
+        job="/usr/bin/php5 /srv/mediawiki/w/maintenance/updateSpecialPages.php --wiki allthetropeswiki"
+  when: "'{{ansible_hostname}}' == 'prod11'"
+
+- name: Create TorBlock node loader cron
+  cron: name="Load TorBlockNodes"
+        user="mediawiki"
+        minute="0"
+        hour="*/12"
+        job="/home/mediawiki/db_loop.sh /srv/mediawiki/w/extensions/TorBlock/loadExitNodes.php --force"
+
+- name: Purge CheckUser data
+  cron: name="Purge CheckUser"
+        user="mediawiki"
+        minute="0"
+        hour="*/12"
+        job="/home/mediawiki/db_loop.sh /srv/mediawiki/w/extensions/CheckUser/maintenance/purgeOldData.php"
+  when: "'{{ansible_hostname}}' == 'prod11'"
+
+- name: Purge AbuseFilter IPs
+  cron: name="Purge AbuseFilter"
+        user="mediawiki"
+        minute="0"
+        hour="*/12"
+        job="/home/mediawiki/db_loop.sh /srv/mediawiki/w/extensions/AbuseFilter/maintenance/purgeOldLogIPData.php"
+  when: "'{{ansible_hostname}}' == 'prod11'"
+
+- name: Add i18n.sh to boot
+  command: /usr/sbin/update-rc.d i18n.sh defaults 99
+  register: update_rc_i18n
+  failed_when: "'error' in update_rc_i18n.stdout"
+  changed_when: False # never report as "changed"

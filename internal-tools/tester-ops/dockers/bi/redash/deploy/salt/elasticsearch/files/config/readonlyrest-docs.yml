@@ -1,0 +1,29 @@
+readonlyrest:
+  # https://github.com/beshu-tech/readonlyrest-docs/blob/master/kibana.md#loading-settings-order-of-precedence
+  force_load_from_file: True
+  ssl:
+    keystore_file: keystore.jks
+    keystore_pass: {{ pillar.elasticsearch.plugins.readonlyrest.key_pass }}
+    key_pass: {{ pillar.elasticsearch.plugins.readonlyrest.key_pass }}
+  # https://github.com/beshu-tech/readonlyrest-docs/blob/master/actionstrings/action_strings_es7.10.1.txt
+  access_control_rules:
+    - name: Allow localhost
+      hosts: ["localhost"]
+    - name: Allow the public group to search indices created by OCDS Index
+      groups: ["public"]
+      indices:
+        patterns: ["ocdsindex_*"]
+        must_involve_indices: True
+      actions:
+        - indices:data/read/search
+    - name: Allow the manage group to manage indices created by OCDS Index
+      groups: ["manage"]
+      indices: ["ocdsindex_*"]
+      actions:
+        - indices:admin/create
+        - indices:admin/get
+        - indices:data/read/search
+        - indices:data/write/bulk
+        - indices:data/write/delete/byquery
+        - indices:monitor/settings/get
+  users: {{ pillar.elasticsearch.plugins.readonlyrest.users|yaml }}

@@ -1,0 +1,14 @@
+/var/log/kingfisher-archive.log
+{
+        rotate 12
+        weekly
+        missingok
+        notifempty
+        compress
+        delaycompress
+        sharedscripts
+        postrotate
+                /usr/lib/rsyslog/rsyslog-rotate
+        endscript
+        create 0644 syslog adm
+}

@@ -1,0 +1,36 @@
+- name: Copy quickscripts
+  template: src={{item}} dest=/root/{{item|basename}} owner=root group=root mode=770
+  with_fileglob:
+    - ./quickscripts/*
+
+- name: Create log directories
+  command: mkdir -p {{item}}
+  with_items:
+    - /var/log/cron/
+  changed_when: False # never report as "changed"
+
+- name: Copy hosts file
+  copy: src="./hosts" dest=/etc/hosts
+
+- name: Copy ansible logrotate configuration
+  copy: src="./logrotate.d/ansible" dest=/etc/logrotate.d
+
+- name: Ensure /etc/ssl/private has the correct permissions
+  shell: chmod 750 /etc/ssl/private && chown -R root:www-data /etc/ssl/private 
+
+- name: Copy SSL cert
+  copy: src=/root/private/ssl/Orain_GlobalSign_2014.crt dest=/etc/ssl/certs/Orain_GlobalSign_2014.crt
+
+- name: Copy SSL key
+  copy: src=/root/private/ssl/Orain_GlobalSign_2014.key dest=/etc/ssl/private/Orain_GlobalSign_2014.key
+
+- name: Copy ssh configuration
+  copy: src=./ssh/ssh_config dest=/etc/ssh/sshd_config
+  notify: Reload ssh
+
+- name: Copy aliases file
+  copy: src=./mail/aliases dest=/etc/aliases
+  when: "'mailservers' not in group_names"
+  notify:
+    - Reload aliases
+    - Restart postfix

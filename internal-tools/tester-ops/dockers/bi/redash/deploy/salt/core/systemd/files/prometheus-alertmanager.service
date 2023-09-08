@@ -1,0 +1,18 @@
+[Unit]
+Description=Prometheus Alertmanager
+After=network.target
+
+[Service]
+User={{ user }}
+Group={{ user }}
+ExecReload=/bin/kill -HUP $MAINPID
+ExecStart=/home/{{ user }}/{{ entry.basename }}-{{ entry.version }}.{{ grains.kernel|lower }}-{{ grains.osarch }}/{{ entry.basename }} \
+    --web.listen-address 127.0.0.1:9095 \
+    --config.file /home/{{ user }}/conf-alertmanager.yml \
+{%- if salt['pillar.get']('apache:sites:prometheus-alertmanager:servername') %}
+    --web.external-url https://{{ pillar.apache.sites['prometheus-alertmanager'].servername }}/ \
+{%- endif %}
+    --storage.path /home/{{ user }}/data
+
+[Install]
+WantedBy=multi-user.target

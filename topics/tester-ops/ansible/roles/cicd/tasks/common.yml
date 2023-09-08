@@ -1,4 +1,0 @@
-- hosts: cicd-servers
-  tasks:
-    - name: install git
-      

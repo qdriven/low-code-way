@@ -1,0 +1,6 @@
+- name: Install ganglia-monitor
+  apt: pkg=ganglia-monitor
+
+- name: Copy gmond.conf to remote servers
+  template: src=gmond.conf dest=/etc/ganglia
+  notify: Restart ganglia-monitor
