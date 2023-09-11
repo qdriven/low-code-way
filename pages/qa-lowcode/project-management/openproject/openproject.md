@@ -1,0 +1,97 @@
+# Open Project
+
+项目管理软件没有预算使用JIRA工具，那就找开源的. 偶然找到openproject，
+目前用下来完全够用了, Bug管理完全够用，而且比较方便。
+
+Openproject的优势和不足总结:
+
+- 优势
+   1. 免费，省钱
+   2. 足够灵活但有不复杂，配置比JIRA还是要简单很多
+   3. 和飞书文档/EXCEL相比，Bug数量大的时候速度快，配置权限和项目关系有界面操作更方便一些
+   4. 有webhook，可以配合其他工具使用
+   5. 还有就是运维不累，一个命令启动，也不担心出现什么问题，数据也都在自己数据库,不用太担心数据损失，小公司就算数据损失了也问题不大,省钱最重要.
+
+- 缺点
+   1. 界面不够现代
+   2. 真要自己做插件技术栈还是太小众
+   3. 可能有一些Bug很难修复
+## Docker运行
+
+- 单独一个docker
+```sh
+docker run -it -p 8080:80 \
+  -e OPENPROJECT_SECRET_KEY_BASE=secret \
+  -e OPENPROJECT_HOST__NAME=localhost:8080 \
+  -e OPENPROJECT_HTTPS=false \
+  openproject/community:12
+```
+- docker-compose运行
+  
+```sh
+git clone https://github.com/opf/openproject-deploy --depth=1 --branch=stable/12 openproject
+cd openproject/compose
+docker-compose up -d
+```
+
+## 配置
+OpenProject这块都是可以配置，配置这块主要包括了:
+1. 用户管理
+2. 项目管理
+3. 展示字段配置
+4. Bug管理的界面/以及过滤功能
+
+以上几个配置功能基本上都可以满足所有小公司需求了。
+* 首页
+* 管理员页面
+* 工作包配置，其实就是BUG或者任务字段配置
+* Bug/任务 状态配置
+
+![](home.png)
+![](admin-home.png)
+![](packge-type.png)
+![](task-field.png)
+![](task-status.png)
+![](custom-field.png)
+![](assigned-task.png)
+
+## webhook
+Webhook可以进行配置和二次加工，做一个飞书，企业微信或者叮叮的通知功能还是很简单
+![](webhook.png)
+
+## USER/项目管理
+标准的用户权限功能，角色/组/项目/用户,和很多业务系统都是类似
+![](project.png)
+![](project-create.png)
+![](group.png)
+
+## 插件
+
+插件自己用下来用户不到，因为大部分功能都满足需求了
+![](plugin.png)
+
+## 我的工作站
+个人工作站，和JIRA基本类似，把自己创建和被分配的任务都可以在一起展示
+
+![](workspace.png)
+
+## 创建BUG
+
+创建BUG也很方便，在一个界面基本上都可以操作了，核心的：
+1. 复制图片/附件都有
+2. 负责人，Comment功能也都有
+3. BUG修改排期的甘特图视图也有
+4. 被分配的BUG也有
+
+![](bug.png)
+![](bug-details.png)
+![](bug-filter-view.png)
+![](open-project-gant.png)
+![](views.png)
+
+## 整体项目Bug甘特图
+
+Bug或者任务的整体甘特图
+
+![](open-project-gant.png)
+

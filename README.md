@@ -14,7 +14,7 @@ After learning low code tools, I realized that Everything could be integrate, th
 
 
 - So What ever you want to build, you need tiny thing in your pockets.
-pnpm r- So try to accumulate different libs, tools for different scenarioes.
+- So try to accumulate different libs, tools for different scenarioes.
 
 ## Product, tools or tiny spell
 

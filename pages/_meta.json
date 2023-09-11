@@ -1,6 +1,8 @@
 {
   "index": "Introduction",
-  "awesome": "awesome low-code",
+  "qa-lowcode" : "Software QA Low Code in Action",
+  "awesome": "Low Code Awesome Collections",
+  "chatgpt-tutorials": "AI In Action",
   "about": {
     "title": "About",
     "type": "page"
