@@ -1,0 +1,16 @@
+{
+  "/about": "pages/about.html",
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/awesome/java-lowocde": "pages/awesome/java-lowocde.html",
+  "/awesome/low-code-tasks": "pages/awesome/low-code-tasks.html",
+  "/awesome/go-lowcode": "pages/awesome/go-lowcode.html",
+  "/awesome/ops-low-code": "pages/awesome/ops-low-code.html",
+  "/awesome/awesome-nocode": "pages/awesome/awesome-nocode.html",
+  "/awesome/python-low-code": "pages/awesome/python-low-code.html",
+  "/chatgpt-tutorials/shaply": "pages/chatgpt-tutorials/shaply.html",
+  "/tutorials/database/postgre": "pages/tutorials/database/postgre.html",
+  "/": "pages/index.html",
+  "/_document": "pages/_document.js",
+  "/404": "pages/404.html"
+}
