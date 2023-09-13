@@ -4,3 +4,7 @@ alternative:
 
 backend:
   - https://github.com/amplication/amplication.git
+
+
+bi:
+  - https://github.com/evidence-dev/evidence
