@@ -33,6 +33,7 @@ METABASE 如何构建Dashboard? 分步骤的话:
 
 重复创建SQL的方式，只不过这次需要用group by这样的SQL来统计:
 ![](./2023-09-14-15-00-18.png)
+![](2023-09-14-15-07-05.png)
 
 同样把这个SQL QUERY 保存就可以，并且加入到Dashboard中。
 
