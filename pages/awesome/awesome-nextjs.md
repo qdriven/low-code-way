@@ -10,7 +10,7 @@ _List inspired by the <b><code>268669⭐</code></b> <b><code>&nbsp;26428🍴</co
 
 ## Contents
 
-- [Awesome Next.js ](#awesome-nextjs--)
+- [Awesome Next.js  ](#awesome-nextjs--)
   - [Contents](#contents)
   - [Community](#community)
   - [Essentials](#essentials)
@@ -24,6 +24,7 @@ _List inspired by the <b><code>268669⭐</code></b> <b><code>&nbsp;26428🍴</co
   - [Newsletters](#newsletters)
   - [Contributing](#contributing)
   - [License](#license)
+  - [Source](#source)
 
 ## Community
 
