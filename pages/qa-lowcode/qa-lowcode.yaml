@@ -1,2 +1,5 @@
 mock-server:
   -  https://github.com/SpectoLabs/hoverfly.git
+product:
+  - https://www.testmo.com/
+  - https://qase.io/
