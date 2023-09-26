@@ -115,9 +115,9 @@ public class TestCase extends ProductModuleValidFlagVo {
 1. 运行应用
 2. 进行菜单配置,就可以基本完成以上功能
 
-![](menu-tc.png)
+![](./menu-tc.png)
 
-![](menu-tc-table.png)
+![](./menu-tc-table.png)
 
 ## 配置完成之后展示
 
