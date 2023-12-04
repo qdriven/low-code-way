@@ -1,3 +1,4 @@
+.idea/
 retool-onpremise/
 tooljet/postgres_data
 tooljet/ToolJet-Source
@@ -12,3 +13,4 @@ pb_data/
 tutorial-demos/
 references/
 .next/
+stacks/
