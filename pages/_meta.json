@@ -1,8 +1,10 @@
 {
   "index": "Introduction",
-  "qa-lowcode" : "Software QA Low Code in Action",
-  "awesome": "Low Code Awesome Collections",
-  "chatgpt-tutorials": "AI In Action",
+  "qa-lowcode" : "Full-Stack QA",
+  "selfhosts":"QA techstack setup",
+  "solutions":"Solution Collections",
+  "tutorials":"tutorials",
+  "awesome": "Awesome Collections",
   "about": {
     "title": "About",
     "type": "page"

@@ -1,114 +1,13 @@
-# Fluent QA Statup Stack: Low Code Way
+# Fluent QA Stack: Low Code Way
 
-Over the years as Software QA, I have experienced a lot of tools in different categories.
-Many of these tools provider too much functionalities which is too expesensive to learn and explore. I think most QA engineer may just use less than 20% of the whole functionalities provided.
+This site is focused on introducing different practical tools, methodologies. I believe most process and tools should be simple, straightforward. All the tools, methodologies should be for solving real issues but not complex conceptions. All the fancy conceptions brings too much confusion.
 
-After the improvement of dev language, framework and so on, the cost of devlop back-office service is decreased significant. The proof of the cost reduced is that the opensource tools, and low-code tools. I tried some of these tools, and find out , actually I can use different tools to replace different commercial tools. Why it works? In most cases, I only use the 20% of the functionalities.
-Different little tools can provide these 20% functionalities with less cost. And most complex functionalities which can be replaced by in-house tools which is eventually developed, as it is highly organization related. 
-
-After learning low code tools, I realized that Everything could be integrate, through:
-1. API
-2. Data Pipeline
-3. Different Components 
-4. ........
+Let's do it by cases and examples to see what kind of problem should be solved in a cost-saving way.
 
 
-- So What ever you want to build, you need tiny thing in your pockets.
-- So try to accumulate different libs, tools for different scenarioes.
+After the improvement of my dev languages skills, framework knowledge, the cost of develop a back-office service is decreased significant. The proof of the cost reduced is that the open-source tools, and low-code tools. I tried some of these tools, and find out , actually I can use different tools to replace different commercial tools. 
 
-## Product, tools or tiny spell
+Why it works? In most cases, I only use the 20% of the functionalities. Different tiny tools can provide these 20% functionalities with less cost. And most complex functionalities which can be replaced by in-house tools which is eventually developed, as it is highly organization/company related. 
 
-- office is a product, but it is too big to use, or you just use less than 20% the total features
-- Tools is sometimes too complex to use, the learning cost is too big to learn
-- tiny spell is good, but it is too hard to integrated.
 
-So I think I need tiny spell libs and an easy integrated way to build up something in
-a low cost way. 
-
-How to build a easy integrated tools? 
-- plugin framework for both frontend or backend
-- easy to integrate API or pipeline
-- easy to make a UI interface or CLI interface 
-
-## Backend Intergation
-
-## Fronent Intergation
-
-## Existing Tools Inergration
-
-## Solve Problem with less cost
-
-In startup company, how to solve problem with less cost?
-
-1. what's kind of problem you want to solve?
-2. Is there any existing opensouce tool to solve it?
-3. How to use the opensource tool?
-4. How to integrate different tools
-
-## Less struggling for QA in small starup company 
-
-This is for QA who struggling in a small startup company to build some tools to help productivities.
-Because of the limitation of the budget, leverage some opensource tools is the only way to achieve it.
-
-There are some tool categories:
-
-1. Infra
-   * Database
-   * Management
-2. CI-CD tools
-   * Docker
-   * K8S
-   * Pipeline
-3. internal-tools: 
-   1. backend-lowcode
-   2. fronted-lowcode
-   3. headless-cms
-
-## Project Management
-
-1. What's the purpose of the project management in Software QA lifecycle?
-2. How to do it in cost-effeciency way?
-3. What to achieve? and how to improve overtime?
-
-- [project management and wiki](agile-ci-cd/agile)
-  - [X] [openproject](docs/qa-lowcode//project-management/openproject/openproject.md)
-  - [X] [飞书文档](docs/qa-lowcode//project-management/feishu/feishu-table.md)
-  - [] [多维表格-Vika/APITABLE]
-
-## Backend Api
-
-- Database Table as API
-  - [] [prest]()
-  - [] [pocketbase]()
-## Infra - Docker Scripts
-
-- [database](db-ops/db) database scripts
-  - [bytebase](db-ops/bytebase) db script wokflow
-  - [postgresql]()
-- [agile-ci-cd](agile-ci-cd) agile-ci-cd:
-  - [gitlab](agile-ci-cd/gitlab) gitlab install scripts
-  - [sonar](agile-ci-cd/sonar/)
-
-## Testing tools
-
-- [mock server: stubby](testing/mock-server/stubby/) stubby: easy to setup mock for both HTTP and HTTP2
-- [mock server: hoverfly](testing/mock-server/hoverfly) capture and mock api traffic, here is [intro](docs/qa-lowcode/mock/hoverfly.md)
-
-## Interal Tools Builder
-
-- [illa-builder](fullstack-lowcode/illa-builder)
-- [form-ai](https://github.com/AOT-Technologies/forms-flow-ai.git)
-## Draw tools
-
-- [excalidraw](https://github.com/excalidraw/excalidraw)
-## Test Ops
-
-- [ansible-scipts](tester-ops/ansible)
-- [docker-compose files](tester-ops/dockers)
-  - 
-## Reference
-
-Some of this project are from:
-- [tester-ops-collections](http://github.com/qdriven/tester-ops-collections)
-- [startpack](https://github.com/tldr-devops/startpack.git)
 

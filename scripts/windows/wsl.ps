@@ -1,0 +1,48 @@
+bcdedit /set hypervisorlaunchtype auto
+## list available ubuntu
+wsl --list --online
+wsl --install -d Ubuntu-Preview
+
+## export wsl version
+wsl -l 
+wsl --shutdown
+wsl --export Ubuntu-Preview D:/wsl-export/ubuntu-review.rar
+wsl --unregister Ubuntu-Preview
+wsl --import D:/wsl-export/ubuntu-review D:/wsl-export/ubuntu-review.rar
+## set default linux 
+wsl -s Ubuntu-Preview
+
+## install scoop
+# 在 PowerShell 中打开远程权限
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+# 自定义 Scoop 安装目录
+irm get.scoop.sh -outfile 'install.ps1'
+.\install.ps1 -ScoopDir 'd:/scoop' -ScoopGlobalDir 'd:/scoop' -NoProxy
+## -Proxy 'http://<ip:port>'
+scoop update
+## 使用国内镜像
+iwr -useb https://gitee.com/glsnames/scoop-installer/raw/master/bin/install.ps1 | iex
+scoop config SCOOP_REPO 'https://gitee.com/glsnames/scoop-installer'
+scoop update
+scoop bucket add scoopet https://github.com/ivaquero/scoopet.git
+scoop update
+scoop bucket add scoopet https://github.com/ivaquero/scoopet.git
+scoop update
+# 使用 Linux 命令行
+scoop install gow
+# 调用管理员权限
+scoop install sudo
+# windows 终端模拟器
+scoop install cmder
+# aria2 在 Scoop 中默认开启
+scoop config aria2-enabled true
+# 关于以下参数的作用，详见aria2的相关资料
+scoop config aria2-retry-wait 4
+scoop config aria2-split 16
+scoop config aria2-max-connection-per-server 16
+scoop config aria2-min-split-size 4M
+scoop bucket known
+scoop bucket add extras
+# 国内镜像
+# scoop bucket add extras https://gitee.com/scoop-bucket/extras.git
+scoop update

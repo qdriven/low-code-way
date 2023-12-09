@@ -1,0 +1,33 @@
+# Setup Windows Dev Env
+
+## Setup WSL
+
+1. 检查虚拟化是否打开？
+![img](/images/cpu.png)
+2. 检查是否安装虚拟化和wsl组件
+![img](/images/vm.png)
+3. 管理员身份打开ternminal，运行如下脚本查看
+```shell
+bcdedit /set hypervisorlaunchtype auto
+## list available ubuntu
+wsl --list --online
+## install Ubuntu-Preview linux
+wsl --install -d Ubuntu-Preview
+```
+4. 也可以通过Microsoft的AppStore安装Linux不同发行版本
+5. 防止C盘占用空间过大的麻烦可以导出Linux版本，使用如下命令:
+```shell
+wsl -l 
+## shutdown wsl
+wsl --shutdown
+## export Ubuntu-Preview Version
+wsl --export Ubuntu-Preview D:/wsl-export/ubuntu-review.rar
+## 删除Ubunut-Preview
+wsl --unregister Ubuntu-Preview
+## 导入Ubuntu-Preview
+wsl --import D:/wsl-export/ubuntu-review D:/wsl-export/ubuntu-review.rar
+## 设置默认操作系统为Ubuntu
+## set default linux 
+wsl -s Ubuntu-Preview
+```
+6. [wsl-基本命令](https://learn.microsoft.com/zh-cn/windows/wsl/basic-commands)
