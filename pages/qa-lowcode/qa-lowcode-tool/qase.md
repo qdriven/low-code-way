@@ -1,6 +1,6 @@
 # QASE Intro
 
-![](./2023-09-18-16-46-53.png)
+![](/images/qbase/2023-09-18-16-46-53.png)
 
 > Qase is the first platform in the market with an AI-powered automated test generator based on manual test cases. Customers report that after switching to Qase, testing operation speed increases by up to 60%.
 
@@ -21,12 +21,12 @@ Overall:
 
 
 QASE, the plugins: 
-![](./2023-09-18-16-52-35.png)
+![](/images/qbase/2023-09-18-16-52-35.png)
 
 ## QASE Basic Modules
 
 - project
-![](./2023-09-18-16-55-42.png)
+![](/images/qbase/2023-09-18-16-55-42.png)
 - Test Management
   - Test Cases Repo: Suite/TestCases
   - Test Case Review
@@ -43,4 +43,4 @@ QASE, the plugins:
     - Requirements
     - Milestones
 
-![](./2023-09-18-16-55-59.png)
+![](/images/qbase/2023-09-18-16-55-59.png)

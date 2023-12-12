@@ -1,6 +1,6 @@
-# Generate Model
+# WARP: Terminal with AI
 
-![](./2023-09-20-22-41-35.png)
+![](/images/warp/2023-09-20-22-41-35.png)
 
 ```sh
 ## Warp AI Transcript (09/20/23 10:42 PM)

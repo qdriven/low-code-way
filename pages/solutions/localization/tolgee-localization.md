@@ -2,15 +2,13 @@
 
 ## Setup
 
-```shell
-
-```
+Install By Docker
 
 ## Quick Start
 
 - Create Project
 
-![img](./tolgee-project.png)
+![img](/images/tolgee/tolgee-project.png)
 
 - Project Dashboard
 - How to Manage transalation Process
