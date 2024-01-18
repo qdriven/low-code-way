@@ -25,12 +25,12 @@ docker run -it -p 8080:80 \
   -e OPENPROJECT_SECRET_KEY_BASE=secret \
   -e OPENPROJECT_HOST__NAME=localhost:8080 \
   -e OPENPROJECT_HTTPS=false \
-  openproject/community:12
+  openproject/community:13
 ```
 - docker-compose运行
   
 ```sh
-git clone https://github.com/opf/openproject-deploy --depth=1 --branch=stable/12 openproject
+git clone https://github.com/opf/openproject-deploy --depth=1 --branch=stable/13 openproject
 cd openproject/compose
 docker-compose up -d
 ```
@@ -100,4 +100,3 @@ Webhook可以进行配置和二次加工，做一个飞书，企业微信或者�
 Bug或者任务的整体甘特图
 
 ![](/images/pm/open-project-gant.png)
-

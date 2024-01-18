@@ -1,16 +1,5 @@
 .idea/
-retool-onpremise/
-tooljet/postgres_data
-tooljet/ToolJet-Source
-cube/conf
-tooljet/tooljet/
+.next/
 node_modules/
 # tooljet/
-postgres_data/
-frontend-lowcode/cubejs-fluents/conf
-xpocketbase
-pb_data/
-tutorial-demos/
-references/
-.next/
-stacks/
+

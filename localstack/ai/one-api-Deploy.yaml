@@ -1,0 +1,253 @@
+apiVersion: app.sealos.io/v1
+kind: Instance
+metadata:
+  name: one-api-cfozxezd
+  labels:
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+spec:
+  gitRepo: https://github.com/songquanpeng/one-api
+  templateType: inline
+  title: one-api
+  url: https://openai.justsong.cn/
+  author: sealos
+  description: >-
+    OpenAI key management & redistribution system, using a single API for all
+    LLMs, and features an English UI.
+  readme: https://raw.githubusercontent.com/songquanpeng/one-api/main/README.md
+  icon: https://avatars.githubusercontent.com/u/39998050?s=96&v=4
+  defaults:
+    app_host:
+      type: string
+      value: undefined
+    app_name:
+      type: string
+      value: one-api-undefined
+    session_secret:
+      type: string
+      value: undefined
+  inputs: null
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: one-api-cfozxezd
+  annotations:
+    originImageName: justsong/one-api
+    deploy.cloud.sealos.io/minReplicas: '1'
+    deploy.cloud.sealos.io/maxReplicas: '1'
+  labels:
+    cloud.sealos.io/app-deploy-manager: one-api-cfozxezd
+    app: one-api-cfozxezd
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: one-api-cfozxezd
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  minReadySeconds: 10
+  serviceName: one-api-cfozxezd
+  template:
+    metadata:
+      labels:
+        app: one-api-cfozxezd
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: one-api-cfozxezd
+          image: justsong/one-api
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: one-api-cfozxezd-mysql-conn-credential
+                  key: password
+            - name: SQL_DSN
+              value: >-
+                root:$(DB_PASSWORD)@tcp(one-api-cfozxezd-mysql-mysql.ns-kplemty6.svc:3306)/mydb
+            - name: SESSION_SECRET
+              value: ugkxlgbu
+            - name: SYNC_FREQUENCY
+              value: '30'
+            - name: SQL_MAX_IDLE_CONNS
+              value: '60'
+            - name: SQL_MAX_OPEN_CONNS
+              value: '1000'
+            - name: CHANNEL_TEST_FREQUENCY
+              value: '30'
+            - name: POLLING_INTERVAL
+              value: '60'
+            - name: BATCH_UPDATE_ENABLED
+              value: 'true'
+            - name: BATCH_UPDATE_INTERVAL
+              value: '60'
+          resources:
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 51Mi
+          command: []
+          args: []
+          ports:
+            - containerPort: 3000
+          imagePullPolicy: Always
+          volumeMounts: []
+      volumes: []
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: one-api-cfozxezd
+  labels:
+    cloud.sealos.io/app-deploy-manager: one-api-cfozxezd
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+spec:
+  ports:
+    - port: 3000
+  selector:
+    app: one-api-cfozxezd
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: one-api-cfozxezd
+  labels:
+    cloud.sealos.io/app-deploy-manager: one-api-cfozxezd
+    cloud.sealos.io/app-deploy-manager-domain: aqghrkxe
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/proxy-body-size: 32m
+    nginx.ingress.kubernetes.io/server-snippet: |
+      client_header_buffer_size 64k;
+      large_client_header_buffers 4 128k;
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 64k
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 64k
+    nginx.ingress.kubernetes.io/proxy-send-timeout: '300'
+    nginx.ingress.kubernetes.io/proxy-read-timeout: '300'
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri ~* \.(js|css|gif|jpe?g|png)) {
+        expires 30d;
+        add_header Cache-Control "public";
+      }
+spec:
+  rules:
+    - host: aqghrkxe.cloud.sealos.io
+      http:
+        paths:
+          - pathType: Prefix
+            path: /()(.*)
+            backend:
+              service:
+                name: one-api-cfozxezd
+                port:
+                  number: 3000
+  tls:
+    - hosts:
+        - aqghrkxe.cloud.sealos.io
+      secretName: wildcard-cloud-sealos-io-cert
+
+---
+apiVersion: apps.kubeblocks.io/v1alpha1
+kind: Cluster
+metadata:
+  finalizers:
+    - cluster.kubeblocks.io/finalizer
+  labels:
+    clusterdefinition.kubeblocks.io/name: apecloud-mysql
+    clusterversion.kubeblocks.io/name: ac-mysql-8.0.30
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+  name: one-api-cfozxezd-mysql
+spec:
+  affinity:
+    nodeLabels: {}
+    podAntiAffinity: Preferred
+    tenancy: SharedNode
+    topologyKeys: []
+  clusterDefinitionRef: apecloud-mysql
+  clusterVersionRef: ac-mysql-8.0.30
+  componentSpecs:
+    - componentDefRef: mysql
+      monitor: true
+      name: mysql
+      replicas: 1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 51Mi
+      serviceAccountName: one-api-cfozxezd-mysql
+      volumeClaimTemplates:
+        - name: data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 3Gi
+            storageClassName: openebs-backup
+  terminationPolicy: Delete
+  tolerations: []
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    sealos-db-provider-cr: one-api-cfozxezd-mysql
+    app.kubernetes.io/instance: one-api-cfozxezd-mysql
+    app.kubernetes.io/managed-by: kbcli
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+  name: one-api-cfozxezd-mysql
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    sealos-db-provider-cr: one-api-cfozxezd-mysql
+    app.kubernetes.io/instance: one-api-cfozxezd-mysql
+    app.kubernetes.io/managed-by: kbcli
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+  name: one-api-cfozxezd-mysql
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    sealos-db-provider-cr: one-api-cfozxezd-mysql
+    app.kubernetes.io/instance: one-api-cfozxezd-mysql
+    app.kubernetes.io/managed-by: kbcli
+    cloud.sealos.io/deploy-on-sealos: one-api-cfozxezd
+  name: one-api-cfozxezd-mysql
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: one-api-cfozxezd-mysql
+subjects:
+  - kind: ServiceAccount
+    name: one-api-cfozxezd-mysql
+    namespace: ns-kplemty6

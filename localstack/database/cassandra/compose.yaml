@@ -1,0 +1,37 @@
+#--------------------------------------------------------------------------
+# ! The Docker Compose file is configured for local environments.
+# ! Do not deploy this Docker Compose file in production environments.
+#--------------------------------------------------------------------------
+
+# Docker compose version https://docs.docker.com/compose/compose-file
+version: "3.9"
+
+# Sets the project name.
+name: localhost-databases
+
+# The Docker services.
+services:
+  # The Cassandra database container.
+  cassandra:
+    # https://hub.docker.com/_/cassandra
+    image: cassandra:latest
+    container_name: "${DB_CONTAINER_NAME:-cassandra_db}"
+    networks:
+      - local
+    # Map the database container exposed port to the host port.
+    ports:
+     - ${DB_PORT:-9042}:9042
+    volumes:
+      - cassandra_db_data:/var/lib/cassandra
+
+# The Docker networks.
+networks:
+  local:
+    driver: "bridge"
+    name: ${NETWORK_NAME:-local_dbs_network}
+
+# The Docker volumes.
+volumes:
+  cassandra_db_data:
+    driver: "local"
+    name: "${DB_VOLUME_DATA_NAME:-cassandra_db_data}"

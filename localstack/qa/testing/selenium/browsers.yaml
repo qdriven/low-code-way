@@ -1,0 +1,37 @@
+chrome:
+  defaultVersion: "112.0"
+  path: "/"
+  kernelCaps:
+  - SYS_ADMIN
+  versions:
+    '112.0':
+        image: seleniarm/standalone-chromium:112.0
+    '113.0':
+      image: seleniarm/standalone-chromium:113.0
+    '114.0':
+      image: seleniarm/standalone-chromium:114.0
+      spec:
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 1
+          limits:
+            memory: 1Gi
+            cpu: 1
+          env:
+            - name: enableVNC
+              value: 'true'
+            - name: enableVideo
+              value: 'true'
+            - name: TZ
+              value: Asia/Calcutta
+            - name: SCREEN_RESOLUTION
+              value: 1920x1080x24
+firefox:
+  defaultVersion: "114.0"
+  path: "/wd/hub"
+  kernelCaps:
+  - SYS_ADMIN
+  versions:
+    '114.0':
+      image: seleniarm/standalone-firefox:114.0

@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenosis
+  namespace: selenosis
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: selenosis
+  template:
+    metadata:
+      labels:
+        app: selenosis
+        selenosis.app.type: worker
+      namespace: selenosis
+    spec:
+      containers:
+      - args: ["/selenosis", "--browsers-config", "./config/browsers.yaml", "--namespace", "selenosis", "--service-name", "seleniferous", "--browser-limit", "15", "--browser-wait-timeout", "10m", "--session-wait-timeout", "10m", "--session-idle-timeout", "10m", "--session-retry-count", "5", "--graceful-shutdown-timeout", "10m", "--proxy-image", "alcounit/seleniferous:v1.0.2"]
+        image: alcounit/selenosis:v1.0.5
+        name: selenosis
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256Mi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 4444
+          name: selenium
+          protocol: TCP
+        volumeMounts:
+        - mountPath: ./config
+          name: browsers-config
+        imagePullPolicy: IfNotPresent
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 4444
+          periodSeconds: 5
+          initialDelaySeconds: 15
+          timeoutSeconds: 30
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 4444
+          periodSeconds: 5
+          initialDelaySeconds: 15
+          timeoutSeconds: 30
+      volumes:
+      - name: browsers-config
+        configMap:
+          name: selenosis-config

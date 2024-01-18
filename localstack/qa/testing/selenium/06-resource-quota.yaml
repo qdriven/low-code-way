@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: selenosis
+spec:
+  hard:
+    pods: "15"
