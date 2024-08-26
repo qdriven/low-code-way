@@ -1,8 +1,0 @@
-https://standard.open-contracting.org/latest/
-https://standard.open-contracting.org/1.1/
-https://standard.open-contracting.org/infrastructure/latest/
-https://standard.open-contracting.org/infrastructure/0.9/
-https://standard.open-contracting.org/profiles/ppp/latest/
-https://standard.open-contracting.org/profiles/ppp/1.0/
-https://standard.open-contracting.org/profiles/eu/latest/
-https://standard.open-contracting.org/profiles/gpa/latest/

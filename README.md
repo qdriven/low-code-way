@@ -1,4 +1,4 @@
-# Low Code Way: Revisited 
+# Low Code Way: Revisited
 
 > Prompt: As a Seasoned Software engineer, Write a introduction for why it is the time to revisit a lot of tools, process, knowledge, and practices in the coming ai age. The main focus is on the new tools like ai integrated low-code tool, the education problems, and how to learn from public information.
 
@@ -25,16 +25,16 @@ You're right, the way we learn is definitely changing! Here's why you might be f
 
 **Reasons you learn more online:**
 
-* **Focus on Practical Skills:** Online resources often cater to specific skills and applications, making them directly applicable to your interests. 
+* **Focus on Practical Skills:** Online resources often cater to specific skills and applications, making them directly applicable to your interests.
 * **Interactive and Engaging:** Online platforms like video tutorials and social media can be more interactive and visually engaging than traditional lectures.
 * **Learn at Your Pace:** You can control the pace of learning online, pausing, rewinding, or fast-forwarding as needed. This personalized approach can be more effective for some learners.
-* **Passionate Communities:** Online communities around specific skills can provide motivation, peer support, and access to experts. 
+* **Passionate Communities:** Online communities around specific skills can provide motivation, peer support, and access to experts.
 
 **Why your parents might think school is the only source:**
 
-* **Traditional Learning Model:**  Many parents grew up in an era where formal education was the primary source of knowledge. 
-* **Structured Learning Environment:** Schools offer a structured environment that can be beneficial for developing critical thinking and study skills. 
-* **Credentialing:** Degrees and certifications from traditional institutions are still important for many careers. 
+* **Traditional Learning Model:**  Many parents grew up in an era where formal education was the primary source of knowledge.
+* **Structured Learning Environment:** Schools offer a structured environment that can be beneficial for developing critical thinking and study skills.
+* **Credentialing:** Degrees and certifications from traditional institutions are still important for many careers.
 
 **Theories on Modern Learning:**
 
@@ -85,7 +85,7 @@ Citations:
 ```
 
 # Introduction
- 
+
 Welcome to low code way! Less Code, More Productivity.
 
 - AI Toolkits
@@ -95,7 +95,7 @@ Welcome to low code way! Less Code, More Productivity.
 - Integration Tools
 - Build Customer Tools Quickly
 
-Everything in this repo is based my own experiments, it my works for me,but not works for you. 
+Everything in this repo is based my own experiments, it my works for me,but not works for you.
 But anyway, it is worthy to have a try.
 
 ## Prompts
@@ -145,10 +145,157 @@ But anyway, it is worthy to have a try.
 
 - [ansible-scipts](tester-ops/ansible)
 - [docker-compose files](tester-ops/dockers)
-  - 
+  -
 ## Reference
 
 Some of this project are from:
 - [tester-ops-collections](http://github.com/qdriven/tester-ops-collections)
 - [startpack](https://github.com/tldr-devops/startpack.git)
 
+
+A Collection of Personal Projects for learning and tutorials, here is main purposes:
+
+1. revisit my software qa path to reflect the good, bad and ugly of the past and now
+   - build some starter project to quick start a new project
+   - collect some common used libs to re-use
+   - build Software QA backoffice application in low-code way
+   - write some tutorials to speed up learning process
+2. fulfill my curiosity
+3. learn how to make products from a simple ideas
+4. learn how to articulate things well
+
+
+
+## 1. QA-Revisited
+
+
+### 1.1. starters: Template Projects For different lanagues
+
+***[Devops/Testops projects](https://github.com/fluent-qa/fluent-project-templates)***:
+- [ansible-playbook-template](https://github.com/qdriven/ansible-playbook-templates)
+- [fluentqa-mdocs-template](https://github.com/fluent-qa/fluentqa-md-docs-template.git)
+- [python-templates](https://github.com/qdriven/fluent-pypro-template)
+- [nextr-docs-templates](https://github.com/qdriven/docs-templates)
+- [golang-template project](https://github.com/fluent-qa/fluentqa-gotpl.git) golang template project
+- [ts-vite-template project](https://github.com/fluent-qa/ts-lib-starter.git) typescript lib template project
+- [starter-cli-app](https://github.com/qdriven/qfluent-go.git)
+
+### 1.2. Simplify QA: Simplify QA Process/Development
+
+Simplify QA Project is to answer following question:
+
+1. Simplify: If you restart your Software QA career, What would you do this time? And Why do you do in this way this time?
+2. Re-Use: If you start a new position, what kind of codes, you could be used in your next position/company?
+
+Projects:
+
+- [fluentqa-workspace](https://github.com/fluent-qa/fluentqa-workspace.git) QA Workspace/Collections of JAVA QA Daily Used Libs
+- [fluentqa-python](https://github.com/fluent-qa/fluent-qa/fluentqa-python.git) QA Daily Python Libs
+
+### 1.3. Lessons: Different Short Tutorials for Different Languages
+
+- [X] [QA-Revisited](https://github.com/qdriven/qa-revistied-slides.git) Daily Case Study
+- [] JAVA: QA JAVA Lessons
+- [] Python: QA Python Lessons
+- [] Golang: QA Golang Lessons
+- [] Javascript/Typescript; QA Typescript Lessons
+- [] chains: QA Blockchain Lessons
+
+### 1.4.Teck-Stack: Different Infrastructure tools for different scenarioes
+
+Low code tools and tutorials to build Software QA Infra for daily work.
+
+- [low-code-way](https://qa-lowcode.vercel.app/) Low Code Way
+
+## 2. Beyond: fulfill my curiosity
+
+Projects beyond software QA, but to fulfill my curiosity. Try and learn.
+
+
+### 2.1. AI: 2.1 Demos
+
+***API and agents***
+
+|Category|Name|Repos|Desc|
+|---|---|---|---|
+|***Agent***|fluentqa-entity|[fluentqa-entity](beyond/demos/fluentqa-entity/README.md)|My first Ever AI Application to generate code by SQL,JSON and Any other structured data|
+|***Proxy***|chatgpt-proxy-nextjs|[chatgpt-proxy-nextjs](beyond/demos/chatgpt-proxies/fluentqa-chatgpt-proxy/)|nextjs chatgpt proxy|
+|***Proxy***|chatgpt-go-proxy|[chatgpt-go-proxy](beyond/demos/chatgpt-proxies/chatgpt-go-proxy/)|Golang Chatgpt Proxy|
+
+## 3. Collectors
+
+Collector Different Data and information.
+
+
+# Self-Making Side Projects
+
+A Collection of Personal Projects for learning and tutorials, here is main purposes:
+
+1. revisit my software qa path to reflect the good, bad and ugly of the past and now
+   - build some starter project to quick start a new project
+   - collect some common used libs to re-use
+   - build Software QA backoffice application in low-code way
+   - write some tutorials to speed up learning process
+2. fulfill my curiosity
+3. learn how to make products from a simple ideas
+4. learn how to articulate things well
+
+## 1. QA-Revisited
+
+
+### 1.1. starters: Template Projects For different lanagues
+
+***[Devops/Testops projects](https://github.com/fluent-qa/fluent-project-templates)***:
+- [ansible-playbook-template](https://github.com/qdriven/ansible-playbook-templates)
+- [fluentqa-mdocs-template](https://github.com/fluent-qa/fluentqa-md-docs-template.git)
+- [python-templates](https://github.com/qdriven/fluent-pypro-template)
+- [nextr-docs-templates](https://github.com/qdriven/docs-templates)
+- [golang-template project](https://github.com/fluent-qa/fluentqa-gotpl.git) golang template project
+- [ts-vite-template project](https://github.com/fluent-qa/ts-lib-starter.git) typescript lib template project
+- [starter-cli-app](https://github.com/qdriven/qfluent-go.git)
+
+### 1.2. Simplify QA: Simplify QA Process/Development
+
+Simplify QA Project is to answer following question:
+
+1. Simplify: If you restart your Software QA career, What would you do this time? And Why do you do in this way this time?
+2. Re-Use: If you start a new position, what kind of codes, you could be used in your next position/company?
+
+Projects:
+
+- [fluentqa-workspace](https://github.com/fluent-qa/fluentqa-workspace.git) QA Workspace/Collections of JAVA QA Daily Used Libs
+- [fluentqa-python](https://github.com/fluent-qa/fluent-qa/fluentqa-python.git) QA Daily Python Libs
+
+### 1.3. Lessons: Different Short Tutorials for Different Languages
+
+- [X] [QA-Revisited](https://github.com/qdriven/qa-revistied-slides.git) Daily Case Study
+- [] JAVA: QA JAVA Lessons
+- [] Python: QA Python Lessons
+- [] Golang: QA Golang Lessons
+- [] Javascript/Typescript; QA Typescript Lessons
+- [] chains: QA Blockchain Lessons
+
+### 1.4.Teck-Stack: Different Infrastructure tools for different scenarioes
+
+Low code tools and tutorials to build Software QA Infra for daily work.
+
+- [low-code-way](https://qa-lowcode.vercel.app/) Low Code Way
+
+## 2. Beyond: fulfill my curiosity
+
+Projects beyond software QA, but to fulfill my curiosity. Try and learn.
+
+
+### 2.1. AI: 2.1 Demos
+
+***API and agents***
+
+|Category|Name|Repos|Desc|
+|---|---|---|---|
+|***Agent***|fluentqa-entity|[fluentqa-entity](beyond/demos/fluentqa-entity/README.md)|My first Ever AI Application to generate code by SQL,JSON and Any other structured data|
+|***Proxy***|chatgpt-proxy-nextjs|[chatgpt-proxy-nextjs](beyond/demos/chatgpt-proxies/fluentqa-chatgpt-proxy/)|nextjs chatgpt proxy|
+|***Proxy***|chatgpt-go-proxy|[chatgpt-go-proxy](beyond/demos/chatgpt-proxies/chatgpt-go-proxy/)|Golang Chatgpt Proxy|
+
+## 3. Collectors
+
+Collector Different Data and informations

@@ -1,1 +1,0 @@
-docker run -d --name sonarqube -p 9000:9000 -p 8082:8082 sonarqube

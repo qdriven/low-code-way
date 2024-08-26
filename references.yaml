@@ -1,10 +1,13 @@
-alternative:
+aternative:
   - notion:
-      -  https://github.com/AppFlowy-IO/AppFlowy.git
+      - https://github.com/AppFlowy-IO/AppFlowy.git
 
 backend:
   - https://github.com/amplication/amplication.git
 
+ui:
+  - https://gitee.com/hooray/fantastic-startkit.git
 
 bi:
   - https://github.com/evidence-dev/evidence
+

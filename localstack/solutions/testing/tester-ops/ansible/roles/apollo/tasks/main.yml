@@ -1,3 +1,0 @@
-- hosts: localhost
-  vars:
-    source_code: ~/workspace/codes/bigname/apollo

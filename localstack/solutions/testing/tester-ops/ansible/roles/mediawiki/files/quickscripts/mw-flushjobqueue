@@ -1,2 +1,0 @@
-#!/bin/sh
-sudo -u mediawiki /home/mediawiki/db_loop.sh /srv/mediawiki/w/maintenance/runJobs.php

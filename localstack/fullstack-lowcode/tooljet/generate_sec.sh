@@ -1,6 +1,0 @@
-#!/bin/sh
-
-LOCKBOX_MASTER_KEY=`openssl rand -hex 32`
-SECRET_KEY_BASE=`openssl rand -hex 64`
-echo "LOCKBOX MASTER KEY:"${LOCKBOX_MASTER_KEY}
-echo "SECRET_KEY_BASE:"${SECRET_KEY_BASE}

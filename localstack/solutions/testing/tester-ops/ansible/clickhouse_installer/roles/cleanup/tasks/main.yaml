@@ -1,7 +1,0 @@
----
-
-- name: Uninstall ClickHouse
-  include: clean_clickhouse.yaml
-
-- name: Uninstall Zookeeper
-  include: clean_zookeeper.yaml
