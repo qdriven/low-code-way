@@ -1,0 +1,5 @@
+repos:
+  - https://github.com/dkorobtsov/automation-arsenal.git
+  - https://github.com/APIs-guru/awesome-openapi3.git
+  - https://github.com/vinta/awesome-python.git
+  - https://github.com/sindresorhus/awesome

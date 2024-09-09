@@ -1,0 +1,31 @@
+{
+  "name": "low-code-way",
+  "author": "Shu Ding",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@vercel/og": "^0.6.2",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.5.4",
+    "next": "^14.2.8",
+    "nextra": "^2.13.4",
+    "nextra-theme-docs": "^2.13.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.33.5"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
+    "@types/node": "^22.5.4",
+    "@types/react": "^18.3.5",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.10.0",
+    "postcss": "^8.4.45",
+    "tailwindcss": "^3.4.10"
+  }
+}
