@@ -1,0 +1,57 @@
+# 常用工具安装
+
+## 开发工具
+
+***IDE***：
+- intelliJava 社区版本
+- pycharm 社区版本
+- webstorm
+- datagrip
+- vs code
+
+***语言***:
+1. JAVA: 可以通过IntellJ JAVA安装
+2. Python
+3. Golang
+4. Nodejs
+
+## window 安装软件工具
+
+- winget
+- scoop，[scoop-app-list](https://scoop.netlify.app/apps/)
+```shell
+# 在 PowerShell 中打开远程权限
+Set-ExecutionPolicy RemoteSigned -scope CurrentUser
+# 自定义 Scoop 安装目录
+irm get.scoop.sh -outfile 'install.ps1'
+.\install.ps1 -ScoopDir 'd:/scoop' -ScoopGlobalDir 'd:/scoop' -NoProxy
+## -Proxy 'http://<ip:port>'
+scoop update
+## 使用国内镜像
+iwr -useb https://gitee.com/glsnames/scoop-installer/raw/master/bin/install.ps1 | iex
+scoop config SCOOP_REPO 'https://gitee.com/glsnames/scoop-installer'
+scoop update
+scoop list
+# 查看更新
+scoop status
+# 删除旧版本
+scoop cleanup
+# 自身诊断
+scoop checkup
+# 使用 Linux 命令行
+scoop install gow
+# 调用管理员权限
+scoop install sudo
+# windows 终端模拟器
+scoop install cmder
+scoop install aria2
+scoop bucket add extras
+
+```
+
+## Personal Setup
+
+- [github-desktop](https://desktop.github.com/)
+- [github-cli](https://github.com/cli/cli)
+- [fastgtihub](https://github.com/WangGithubUser/FastGithub) easy to git clone
+- [nu-shell](https://www.nushell.sh/zh-CN/book/installation.html) interesting shell commands

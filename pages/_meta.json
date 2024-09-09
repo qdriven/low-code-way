@@ -1,0 +1,27 @@
+{
+    "index": {
+      "type": "page",
+      "title": "Low Code Way",
+      "display": "hidden"
+  
+    },
+    "infra": {
+      "type":"page",
+      "title":"Self-Host infra"
+    },
+    "docs": {
+      "type": "page",
+      "title": "Documentation"
+    },
+    "awesome":{
+      "type": "page",
+      "title": "Awesomes"
+    },
+    "about": {
+      "type": "page",
+      "title": "About",
+      "theme": {
+        "typesetting": "article"
+      }
+    }
+}
