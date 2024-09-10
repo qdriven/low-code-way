@@ -1,28 +1,32 @@
 {
-    "index": {
-      "type": "page",
-      "title": "Low Code Way",
-      "display": "hidden"
-  
-    },
-    "awesome":{
-      "type": "page",
-      "title": "Awesomes"
-    },
-    "infra": {
-      "type":"page",
-      "title":"Self-Host infra"
-    },
-    "docs": {
-      "type": "page",
-      "title": "Documentation"
-    },
- 
-    "about": {
-      "type": "page",
-      "title": "About",
-      "theme": {
-        "typesetting": "article"
-      }
+  "index": {
+    "type": "page",
+    "title": "Low Code Way",
+    "display": "hidden"
+  },
+  "-- Self-Host Infra": {
+    "type": "separator",
+    "title": "Self-Host infra"
+  },
+  "infra": {
+    "type": "page",
+    "title": "Self-Host infra"
+  },
+  "-- Awesome": {
+    "type": "separator",
+    "title": "Awesome"
+  },
+  "awesome": "awesome collection",
+  "-- More": {
+    "type": "separator",
+    "title": "More"
+  },
+  "cms": "cms",
+  "about": {
+    "type": "page",
+    "title": "About",
+    "theme": {
+      "typesetting": "article"
     }
+  }
 }
